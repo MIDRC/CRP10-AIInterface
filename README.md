@@ -12,6 +12,6 @@ Repo Content Description: A description of the types of files, code, and/or data
 
 **Example Commands**: python manage.py runserver
 
-References
+**References**:
 1)For information on MIDRC GitHub documentation and best practices, please see https://midrc.atlassian.net/wiki/spaces/COMMITTEES/pages/672497665/MIDRC+GitHub+Best+Practices
 2)Moffitt Cancer Center and University of Chicago.
