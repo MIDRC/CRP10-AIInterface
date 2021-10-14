@@ -1,20 +1,17 @@
-**MIDRC TDP or CRP number and title** (with link to corresponding midrc.org page)
+**MIDRC CRP 10 - Visualization and Explainability of machine intelligence of COVID-19 for prognosis and monitoring therapy** (https://www.midrc.org/midrc-collaborating-research-projects/project-one-crp10)
 
-Development Team: names (and emails if desired) of individuals associated with the project
+**Development Team**: Naveena Gorre (naveena.gorre@moffitt.org) 
 
-Problem Definition:....
+**Problem Definition**: The main idea of MIDRC API is to use it as an interface for easy prototyping and testing of AI algorithms.
 
-Modality: CT, X-ray, Clinical Data
+**Modality**: CT, X-ray, Clinical Data
 
-Requirements: (e.g., Python, Tensorflow Keras API, OpenCV, Numpy)
-
-An image summarizes the proposed algorithm 
+**Requirements**: (Python, Tensorflow Keras API, OpenCV, Numpy, scikitlearn, pytorch)
 
 Repo Content Description: A description of the types of files, code, and/or data included in the repo, as well as instructions on how to operate or utilize the files as appropriate.
 
-Example Commands: Please provide example scripts to run the algorithm, either as a script here or as a link to a Jupyter notebook that demonstrates how to use the code.
+**Example Commands**: python manage.py runserver
 
 References
-For information on MIDRC GitHub documentation and best practices, please see https://midrc.atlassian.net/wiki/spaces/COMMITTEES/pages/672497665/MIDRC+GitHub+Best+Practices
-U-Net: Convolutional Networks for Biomedical Image Segmentation https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
-Laboratory and University Name that develops the algorithm.
+1)For information on MIDRC GitHub documentation and best practices, please see https://midrc.atlassian.net/wiki/spaces/COMMITTEES/pages/672497665/MIDRC+GitHub+Best+Practices
+2)Moffitt Cancer Center and University of Chicago.
