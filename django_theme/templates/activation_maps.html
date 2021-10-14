@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"> {% load static %}
+
+<head>
+	<title>Multiselect 09</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+	<link href="{% static 'css/style.css' %}" rel="stylesheet"> </head>
+
+<body>
+	<form method="POST" enctype="multipart/form-data" action=" "> {% csrf_token %}
+		<section class="ftco-section">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-md-6 text-center mb-5">
+						<h2 class="heading-section">Choose the DL Layer to investigate</h2> </div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-lg-5 d-flex justify-content-center align-items-center">
+						<select class="js-select2" multiple="multiple" name="layers" action="/"> {% for layer in DNN_layers %}
+							<option value="{{layer}}">{{layer}}</option> {% endfor %} </select>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4 col sm-4">
+				<label form="formFileabled" class="form-label">Upload your project files here:</label>
+				<input name="filePath" class="form-control" type="file" id="formFileabled" abled /> </div>
+			<input type="submit" value="Submit">
+			<!--<div>DNN layer chosen is:{{layer_name}}</div>-->
+			<!--<h2>Input image:</h2>
+                <img src={{filePathName}} class="img-fluid" alt='imagename' style="width: 400px;"> -->
+			<div class="col-md-4 col sm-4">
+				<h2>Activation Map:</h2> <img src={{ActivationMapImgPath}} class="img-fluid" alt='heatmapimage' style="width: 400px;"> {{heatMapImgPath}} </div>
+		</section>
+		<script src="{% static 'js/jquery.min_HM.js' %}"></script>
+		<script src="{% static 'js/popper_HM.js' %}"></script>
+		<script src="{% static 'js/bootstrap.min.js' %}"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+		<script src="{% static 'js/main_HM.js' %}"></script>
+	</form>
+</body>
+
+</html>

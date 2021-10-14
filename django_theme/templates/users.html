@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <h2>Moffitt AI Interface</h2>
+  <p>Welcome to MAIIO, {% if user.is_authenticated %}{{ user.username }}{% else %}visitor{% endif %}!</p>
+  <p>
+    <strong>Total users registered: </strong> {{ count }}
+  </p>
+
+{% endblock %}
