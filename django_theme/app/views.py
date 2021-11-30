@@ -69,7 +69,7 @@ class Home(TemplateView):
          context = {'a': 1}
          return render(request, 'index.html')
 
-    
+    # testing comment
     def loadData(request):
         if request.method == 'POST':
             fileObj=request.FILES['filePath']
