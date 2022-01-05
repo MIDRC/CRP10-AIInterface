@@ -2,7 +2,7 @@
 
 **Development Team**: Naveena Gorre (naveena.gorre@moffitt.org) 
 
-**Problem Definition**: The main idea of MAIIC- MIDRC AI interface for Covid API is to use it as an interface for easy prototyping and testing of AI algorithms.
+**Problem Definition**: The main idea of CRP10AI interface is to use it as an interface for easy prototyping and testing of AI algorithms.
 
 **Modality**: CT, X-ray, Clinical Data
 
