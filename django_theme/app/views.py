@@ -14,14 +14,21 @@ from keract import get_activations
 from keract import display_activations,display_heatmaps
 import numpy as np
 import cv2
+import pydicom
 import re
 import tensorflow as tf
 import os
+from tensorflow.keras.applications.vgg19 import VGG19
+from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Activation, Flatten
+from tensorflow.keras.models import Model
+from tensorflow import keras
+from sklearn.model_selection import train_test_split
 # Create your views here.
 
 MODEL=load_model('.\\models\\covidnet.hdf5')
 untrain_model = load_model('.\\models\\untrained_model.hdf5')
 data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
+
 
 Image_Height, Image_Width = 150,150 
 BATCH_SIZE, EPOCHS = 5,5
@@ -81,46 +88,101 @@ class Home(TemplateView):
             return render(request,'Multimodality.html',context)
         return render(request,'Multimodality.html')
 
+    def process_scan(filepath):
+        scan = pydicom.read_file(str(filepath))
+        scan = scan.pixel_array
+        scan = cv2.resize(scan, (224, 224))
+        return scan
+
+
+    def scanpath(Base_path):
+       scans = []
+       for root, dirs, files in os.walk(Base_path):
+           for fname in files:
+               scans.append(os.path.join(root, fname))
+       return scans
+
+    def model2(n_classes=2, input_shape=(224, 224, 1)):
+       vgg_model = VGG19(include_top=False, weights=None, input_shape=input_shape)
+       flat = Flatten()(vgg_model.layers[-1].output)
+       proj = Dense(1024, activation='relu')(flat)
+       soft = Dense(1, activation='sigmoid')(proj)
+       model = Model(inputs=vgg_model.inputs, outputs=soft)
+       return model
+
 
     def training_model(request):
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
             batchsize = int(request.POST.get('batchsizeVal'))
             learningrate = request.POST.get('learnrateVal')
-            loss = request.POST.get('loss')
-            optimizer = request.POST.get('optimizer')
+            loss = request.POST.get('lossVal')
+            optimizer = request.POST.get('optimizerVal')
+            model_input = request.POST.get('vggVal')
+            print(model_input)
+            if model_input == "Model2":
+                # load data paths, process scans to obtain pixel array and generate labels
+                print('You have chosen:',model_input,",extracting the pixel array of dicom images to train the model...")
+                normal_scan_paths = Home.scanpath(
+                    r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative")
+                abnormal_scan_paths = Home.scanpath(
+                    r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive")
+                #
+                normal_scans = np.array([Home.process_scan(path) for path in normal_scan_paths])
+                abnormal_scans = np.array([Home.process_scan(path) for path in abnormal_scan_paths])
+                #
+                normal_labels = np.array([0 for _ in range(len(normal_scans))])
+                abnormal_labels = np.array([1 for _ in range(len(abnormal_scans))])
+                # Perform data split for training, validation, testing
+                X_train, X_test, y_train, y_test = train_test_split(np.concatenate((abnormal_scans, normal_scans)),
+                                                                    np.concatenate((abnormal_labels, normal_labels)),
+                                                                    test_size=0.2, shuffle=True, random_state=8)
+                X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=8)
+                CRcl_model = Home.model2()
+                CRcl_model.compile(
+                    loss="binary_crossentropy",
+                    optimizer=keras.optimizers.Adam(learning_rate=0.001),
+                    metrics=["acc"],
+                )
+                CRcl_model.fit(
+                    X_train,
+                    y_train,
+                    epochs=25,
+                    batch_size=10,
+                    validation_data=(X_val, y_val),
+                )
+
+           #  train_datagen = ImageDataGenerator(rescale=1./255,
+           #  shear_range=0.2,
+           #  zoom_range=0.2,
+           #  horizontal_flip=True,
+           #  validation_split=0.25)
+           #
+           #  train_generator = train_datagen.flow_from_directory(
+           #  data,
+           #  target_size=(Image_Height, Image_Width),
+           #  batch_size=batchsize,
+           #  class_mode='binary',
+           #  subset='training')
+           #
+           #  validation_generator = train_datagen.flow_from_directory(
+           #  data,
+           #  target_size=(Image_Height, Image_Width),
+           #  batch_size=batchsize,
+           #  class_mode='binary',
+           #  shuffle= False,
+           #  subset='validation')
+           # # untrain_model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+           #  covid_model = untrain_model.fit(
+           #  train_generator,
+           #  steps_per_epoch = train_generator.samples // batchsize,
+           #  validation_data = validation_generator,
+           #  validation_steps = validation_generator.samples // batchsize,
+           #  epochs = Epochs)
             
-            train_datagen = ImageDataGenerator(rescale=1./255,
-            shear_range=0.2,
-            zoom_range=0.2,
-            horizontal_flip=True,
-            validation_split=0.25)
-        
-            train_generator = train_datagen.flow_from_directory(
-            data,
-            target_size=(Image_Height, Image_Width),
-            batch_size=batchsize,
-            class_mode='binary',
-            subset='training')
-        
-            validation_generator = train_datagen.flow_from_directory(
-            data, 
-            target_size=(Image_Height, Image_Width),
-            batch_size=batchsize,
-            class_mode='binary',
-            shuffle= False,
-            subset='validation')  
-           # untrain_model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])  
-            covid_model = untrain_model.fit(
-            train_generator,
-            steps_per_epoch = train_generator.samples // batchsize,
-            validation_data = validation_generator,
-            validation_steps = validation_generator.samples // batchsize,
-            epochs = Epochs)
-            
-            context = covid_model.history['accuracy']
-            return render(request,'training_index.html',{"context": context,'epochs':Epochs})
-        return render(request,"training_index.html")
+            #context = covid_model.history['accuracy']
+            return render(request,'training.html',{"context": context,'epochs':Epochs})
+        return render(request,"training.html")
     
     def removespaces(file_with_space):
         return os.rename(file_with_space,file_with_space.replace(' ', '_'))

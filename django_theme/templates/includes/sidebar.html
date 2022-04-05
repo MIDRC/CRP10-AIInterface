@@ -6,7 +6,7 @@
    CRP10 AI Interface
    </a>
 </div>
-    <ul class="nav">
+    <nav class="nav">
             {% if request.user.is_authenticated %}
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDatabase" aria-expanded="false" aria-controls="collapseDatabase">
                 <p> <i class="fas fa-database" ></i> Launch data Portal  </p>
@@ -19,14 +19,24 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDNN" aria-expanded="false" aria-controls="collapseDNN">
                <i class="fas fa-eye"></i>
                <p> DNN prediction</p>
-
             </a>
-            <div class="collapse" id="collapseDNN" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+            <div class="collapse" id="collapseDNN" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#modelCollapse" aria-expanded="false" aria-controls="modelCollapse" >
+                           Training
+                        </a>
+                        <div class="collapse" id="modelCollapse" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                           <nav class="sb-sidenav-menu-nested nav">
+                              <strong><a class="nav-link" href="training.html">Pre-training</a></strong>
+                              <strong><a class="nav-link" href="training_scratch.html">Training from zero</a></strong>
+                           </nav>
+                        </div>
                <nav class="sb-sidenav-menu-nested nav">
-                  <strong><a class="nav-link" href="training.html">TRAINING</a></strong>
                   <strong><a class="nav-link" href="testing.html">TESTING</a></strong>
                </nav>
+                 </nav>
             </div>
+
           <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseExplainabilityMethods" aria-expanded="false" aria-controls="collapseExplainabilityMethods">
                      <i class="fas fa-book-open"></i>
               <p>Explainability</p>
@@ -84,6 +94,6 @@
           {% endif %}
 
         </ul>
-
+    </nav>
       </div>
     </div>

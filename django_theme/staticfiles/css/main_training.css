@@ -59,13 +59,13 @@ html {
 
 * {
   padding: 0;
-  margin: 0;
+  margin: auto;
 }
 
 *, *:before, *:after {
   -webkit-box-sizing: inherit;
   -moz-box-sizing: inherit;
-  box-sizing: inherit;
+  box-sizing: conten-box;
 }
 
 /* ==========================================================================
@@ -112,8 +112,8 @@ fieldset {
 }
 
 button {
-  outline: none;
-  background: none;
+  outline: darkviolet;
+  background: darkviolet;
   border: none;
 }
 
@@ -252,13 +252,48 @@ h6 {
   border-radius: 20px;
 }
 
+
 .btn--green {
-  background: #57b846;
+  background: darkviolet;
 }
 
 .btn--green:hover {
   background: #4dae3c;
 }
+
+p{
+  font-family: arial;
+  font-weight: bold;
+}
+.button{
+  background-color: #2a609a;
+	width: 130px;
+	height: 60px;
+  color: white;
+  outline: none;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.block-display button{
+  margin-bottom:5px;
+  display:block;
+}
+
+.button:hover{
+  background-color: #32CD32;
+  font-size: 20px;
+  transition: 0.5s;
+}
+.btn-group {
+   margin:0 auto;
+   display:block; }
+
+.btn-toolbar > .btn, .btn-toolbar > .btn-group, .btn-toolbar > .input-group {
+  margin-left:-5px;
+}
+
 
 /* ==========================================================================
    #DATE PICKER
@@ -524,3 +559,66 @@ input {
     padding-bottom: 45px;
   }
 }
+
+#divMenu, ul, li, li li {
+    margin: 0;
+    padding: 0;
+}
+
+#divMenu {
+    width: 150px;
+    height: 27px;
+}
+
+#divMenu ul
+{
+     line-height: 25px;
+}
+
+    #divMenu li {
+        list-style: none;
+        position: relative;
+        background: darkviolet;
+    }
+
+        #divMenu li li {
+            list-style: none;
+            position: relative;
+            background: darkviolet;
+            left: 148px;
+            top: -27px;
+        }
+
+
+    #divMenu ul li a {
+        width: 148px;
+        height: 35px;
+        display: flow-root;
+        text-decoration: none;
+        text-align: center;
+        font-family: Poppins;
+        color:#ffffff;
+        border:1px solid #eee;
+    }
+
+    #divMenu ul ul {
+        position: absolute;
+        visibility: hidden;
+        top: 27px;
+    }
+
+    #divMenu ul li:hover ul {
+        visibility: visible;
+    }
+
+    #divMenu li:hover {
+        background-color: #945c7d;
+    }
+
+    #divMenu ul li:hover ul li a:hover {
+        background-color: #945c7d;
+    }
+
+    #divMenu a:hover {
+        font-weight: bold;
+    }
