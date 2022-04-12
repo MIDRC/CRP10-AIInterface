@@ -101,6 +101,22 @@ class Home(TemplateView):
            for fname in files:
                scans.append(os.path.join(root, fname))
        return scans
+    def pixelarray (normal_scan_path,abnormal_scan_path):
+        normal_scan_paths = Home.scanpath(normal_scan_path)
+        abnormal_scan_paths = Home.scanpath(abnormal_scan_path)
+        #
+        normal_scans = np.array([Home.process_scan(path) for path in normal_scan_paths])
+        abnormal_scans = np.array([Home.process_scan(path) for path in abnormal_scan_paths])
+        #
+        normal_labels = np.array([0 for _ in range(len(normal_scans))])
+        abnormal_labels = np.array([1 for _ in range(len(abnormal_scans))])
+        # Perform data split for training, validation, testing
+        X_train, X_test, y_train, y_test = train_test_split(np.concatenate((abnormal_scans, normal_scans)),
+                                                            np.concatenate((abnormal_labels, normal_labels)),
+                                                            test_size=0.2, shuffle=True, random_state=8)
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=8)
+        return X_train, y_train, X_test, y_test, X_val, y_val
+
 
     def model2(n_classes=2, input_shape=(224, 224, 1)):
        vgg_model = VGG19(include_top=False, weights=None, input_shape=input_shape)
@@ -123,21 +139,9 @@ class Home(TemplateView):
             if model_input == "Model2":
                 # load data paths, process scans to obtain pixel array and generate labels
                 print('You have chosen:',model_input,",extracting the pixel array of dicom images to train the model...")
-                normal_scan_paths = Home.scanpath(
-                    r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative")
-                abnormal_scan_paths = Home.scanpath(
-                    r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive")
-                #
-                normal_scans = np.array([Home.process_scan(path) for path in normal_scan_paths])
-                abnormal_scans = np.array([Home.process_scan(path) for path in abnormal_scan_paths])
-                #
-                normal_labels = np.array([0 for _ in range(len(normal_scans))])
-                abnormal_labels = np.array([1 for _ in range(len(abnormal_scans))])
-                # Perform data split for training, validation, testing
-                X_train, X_test, y_train, y_test = train_test_split(np.concatenate((abnormal_scans, normal_scans)),
-                                                                    np.concatenate((abnormal_labels, normal_labels)),
-                                                                    test_size=0.2, shuffle=True, random_state=8)
-                X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=8)
+                normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"
+                abnormal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive"
+                X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path,abnormal_scan_path)
                 CRcl_model = Home.model2()
                 CRcl_model.compile(
                     loss="binary_crossentropy",
