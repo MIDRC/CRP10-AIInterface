@@ -26,8 +26,11 @@ from sklearn.model_selection import train_test_split
 # Create your views here.
 
 MODEL=load_model('.\\models\\covidnet.hdf5')
+ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covidCRnet.hdf5')
 untrain_model = load_model('.\\models\\untrained_model.hdf5')
 data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
+normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"
+abnormal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive"
 
 
 Image_Height, Image_Width = 150,150 
@@ -47,7 +50,7 @@ class Registration(TemplateView):
             form = UserCreationForm(request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('index')
+                return redirect('users')
         else:
             form = UserCreationForm()
         return render(request, 'registration/signup.html', {
@@ -127,6 +130,15 @@ class Home(TemplateView):
        return model
 
 
+    def model1(input_shape=(224,224,1)):
+        model = VGG19(include_top=True, weights=None, input_shape=input_shape)
+        x = model.layers[-1].output
+        # x=Dense(256)(x)
+        pred = Dense(1, activation='sigmoid')(x)
+        # soft = Dense(1, activation='sigmoid')(model.layers[-1].output)
+        model = Model(inputs=model.inputs, outputs=pred)
+        return model
+
     def training_model(request):
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
@@ -136,11 +148,28 @@ class Home(TemplateView):
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
             print(model_input)
-            if model_input == "Model2":
+            if model_input == "Transfer learning":
+                # load data paths, process scans to obtain pixel array and generate labels
+                print('You have chosen:', model_input,
+                      ",extracting the pixel array of dicom images to train the model...")
+                X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path, abnormal_scan_path)
+                CRcl_model = Home.model1()
+                CRcl_model.compile(
+                    loss="binary_crossentropy",
+                    optimizer=keras.optimizers.Adam(learning_rate=0.001),
+                    metrics=["acc"],
+                )
+                CRcl_model.fit(
+                    X_train,
+                    y_train,
+                    epochs=25,
+                    batch_size=10,
+                    validation_data=(X_val, y_val),
+                )
+
+            if model_input == "Fine tuning":
                 # load data paths, process scans to obtain pixel array and generate labels
                 print('You have chosen:',model_input,",extracting the pixel array of dicom images to train the model...")
-                normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"
-                abnormal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive"
                 X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path,abnormal_scan_path)
                 CRcl_model = Home.model2()
                 CRcl_model.compile(
@@ -184,7 +213,7 @@ class Home(TemplateView):
            #  validation_steps = validation_generator.samples // batchsize,
            #  epochs = Epochs)
             
-            #context = covid_model.history['accuracy']
+            context = ChestCR_model.history['accuracy']
             return render(request,'training.html',{"context": context,'epochs':Epochs})
         return render(request,"training.html")
     
@@ -203,18 +232,30 @@ class Home(TemplateView):
                 filePathName=fs.save(fileObj.name,fileObj)
                 filePathName=fs.url(filePathName)  
                 test_image = '.'+filePathName
-                img = tf.keras.preprocessing.image.load_img(test_image,target_size=(Image_Height, Image_Width))
-                img_nparray = tf.keras.preprocessing.image.img_to_array(img)
-                input_Batch = np.array([img_nparray])   
-                prediction = MODEL.predict(input_Batch)
-                print(prediction)
-                final_pred = np.argmax(prediction,axis=1)
-                for pred in final_pred:
-                    if pred == 1:
-                        label ='normal'
-                    elif pred == 0:
-                        label='covid'
-                context={'filePathName':filePathName,'predictedLabel':label}
+                #img = tf.keras.preprocessing.image.load_img(test_image,target_size=(Image_Height, Image_Width))
+                #img_nparray = tf.keras.preprocessing.image.img_to_array(img)
+                #input_Batch = np.array([img_nparray])
+                #prediction = MODEL.predict(input_Batch)
+                test_scan = Home.process_scan(test_image)
+                test_scan_pred = np.expand_dims(test_scan, axis=-1)
+                #print(ChestCR_model.summary())
+                prediction = ChestCR_model.predict(np.expand_dims(test_scan_pred, axis=0))[0]
+                scores = [1 - prediction[0], prediction[0]]
+                class_names = ["normal", "abnormal"]
+                for score, name in zip(scores, class_names):
+                    print("This model is %.2f percent confident that Covid scan is %s"
+                          % ((100 * score), name))
+                    final_score1 = 100*scores[0]
+                    final_name1 = class_names[0]
+                    final_score2=100*scores[1]
+                    final_name2 = class_names[1]
+                #final_pred = np.argmax(prediction,axis=1)
+                #for pred in final_pred:
+                    #if pred == 1:
+                       # label ='normal'
+                    #elif pred == 0:
+                        #label='covid'
+                context={'f_score':final_score1,'f_name':final_name1, 'S_score':final_score2,'S_name':final_name2}
                 return render(request,'testing.html',context)
         return render(request,'testing.html')
     
