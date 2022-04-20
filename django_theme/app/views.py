@@ -23,6 +23,14 @@ from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Act
 from tensorflow.keras.models import Model
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
+
+from app.tasks import process
+from app.forms import JobForm
+from celery.result import AsyncResult
+from app.models import Tasks
+from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_http_methods
+
 # Create your views here.
 
 MODEL=load_model('.\\models\\covidnet.hdf5')
@@ -78,7 +86,8 @@ class Home(TemplateView):
     def index(request):
          context = {'a': 1}
          return render(request, 'index.html')
-
+    # def table(request):
+    #     return render(request, 'tables.html')
     # testing comment
     def loadData(request):
         if request.method == 'POST':
@@ -90,6 +99,55 @@ class Home(TemplateView):
             context={'filePathName':filePathName}
             return render(request,'Multimodality.html',context)
         return render(request,'Multimodality.html')
+
+    @require_http_methods(["GET", "POST"])
+    def run(request):
+        form = JobForm(request.POST)
+        if request.method == "POST":
+            if form.is_valid():
+                data = form.cleaned_data
+                job_name = data['job_name']
+                process.delay(job_name=job_name)
+                return render(request, 'run.html',context={'form': JobForm,
+                                           'message': f'{job_name} dispatched...'})
+            else:
+                print('form is invalid')
+        else:
+            return render(request, 'run.html',
+                              context={'form': JobForm})
+        #return render(request, 'run.html')
+    @staticmethod
+    def track_jobs():
+        entries = Tasks.objects.all()
+        information = []
+        for item in entries:
+            progress = 100  # max value for bootstrap progress
+            # bar, when  the job is finished
+            result = AsyncResult(item.task_id)
+            if isinstance(result.info, dict):
+                progress = result.info['progress']
+            information.append([item.job_name, result.state,
+                                    progress, item.task_id])
+        return information
+
+    @require_GET
+    def monitor(request):
+        info = Home.track_jobs()
+        return render(request, 'monitor.html', context={'info': info})
+
+    @require_GET
+    def cancel_job(request, task_id=None):
+        result = AsyncResult(task_id)
+        result.revoke(terminate=True)
+        info = Home.track_jobs()
+        return render(request, 'monitor.html', context={'info': info})
+
+    @require_GET
+    def delete_job(request, task_id=None):
+        a = Tasks.objects.filter(task_id=task_id)
+        a.delete()
+        info = Home.track_jobs()
+        return render(request, 'monitor.html', context={'info': info})
 
     def process_scan(filepath):
         scan = pydicom.read_file(str(filepath))
