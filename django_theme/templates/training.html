@@ -26,6 +26,10 @@
          <div class="wrapper wrapper--w780">
             <div class="card card-3">
                <div class="card-heading">
+                   <div class='progress-wrapper'>
+                        <div id='progress-bar' class='progress-bar'>&nbsp;</div>
+                   </div>
+                    <div id="progress-bar-message">Waiting for progress to start...</div>
                   <!--  <div class="btn-group-vertical">
     <button type="button" class="btn btn-primary">Alexnet</button>
     <button type="button" class="btn btn-primary">MobileNet</button>
@@ -89,6 +93,7 @@
                      <div class="p-t-10">
                         <button class="btn btn--pill btn--green" type="submit" name="train" value="Train">Train</button>
                      </div>
+
                   </form>
                </div>
             </div>
@@ -96,6 +101,7 @@
       </div>
       <!-- Jquery JS-->
       <script type="javascript" href="{% static 'js/jquery.min.js' %}"></script>
+      <script type="javascript" href="{% static 'js/celery_progress.js' %}"></script>
       <!-- Vendor JS-->
       <script type="javascript" href="{% static 'js/select2.min_training.js' %}"></script>
       <script type="javascript" href="{% static 'js/moment.min.js' %}"></script>
