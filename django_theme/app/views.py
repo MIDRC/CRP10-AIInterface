@@ -24,7 +24,7 @@ from tensorflow.keras.models import Model
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
 
-from app.tasks import process
+from app.tasks import process, process_training
 from app.forms import JobForm
 from celery.result import AsyncResult
 from app.models import Tasks
@@ -116,6 +116,33 @@ class Home(TemplateView):
             return render(request, 'run.html',
                               context={'form': JobForm})
         #return render(request, 'run.html')
+
+    def run_training(request):
+        if request.method == 'POST':
+            Epochs = int(request.POST.get('epochVal'))
+            batchsize = int(request.POST.get('batchsizeVal'))
+            learningrate = request.POST.get('learnrateVal')
+            loss = request.POST.get('lossVal')
+            optimizer = request.POST.get('optimizerVal')
+            model_input = request.POST.get('vggVal')
+            if model_input == "Fine tuning":
+                # load data paths, process scans to obtain pixel array and generate labels
+                #print('You have chosen:', model_input,
+                 #     ",extracting the pixel array of dicom images to train the model...")
+                #X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path, abnormal_scan_path)
+                #CRcl_model = Home.model2()
+                #CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=0.001),metrics=["acc"],)
+                #CRcl_model.fit(X_train,y_train,epochs=25,batch_size=10,validation_data=(X_val, y_val),)
+                process_training.delay(job_name = model_input)
+            #context = ChestCR_model.history['accuracy']
+                return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
+        return render(request, "training.html")
+
+    @require_GET
+    def monitor_training(request):
+        info = Home.track_jobs()
+        return render(request, 'monitor.html', context={'info': info})
+
     @staticmethod
     def track_jobs():
         entries = Tasks.objects.all()
@@ -313,7 +340,9 @@ class Home(TemplateView):
                        # label ='normal'
                     #elif pred == 0:
                         #label='covid'
-                context={'f_score':final_score1,'f_name':final_name1, 'S_score':final_score2,'S_name':final_name2}
+                #context = {'message': f'You have chosen {model_input}'}
+                context={'message': f'Model confidence: %.2f Label: %s' % ((final_score1), final_name1),
+                         'message1':f'Model confidence: %.2f Label: %s' % ((final_score2), final_name2)}
                 return render(request,'testing.html',context)
         return render(request,'testing.html')
     
