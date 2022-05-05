@@ -26,23 +26,6 @@
          <div class="wrapper wrapper--w780">
             <div class="card card-3">
                <div class="card-heading">
-                   <div class='progress-wrapper'>
-                        <div id='progress-bar' class='progress-bar'>&nbsp;</div>
-                   </div>
-                    <div id="progress-bar-message">Waiting for progress to start...</div>
-                  <!--  <div class="btn-group-vertical">
-    <button type="button" class="btn btn-primary">Alexnet</button>
-    <button type="button" class="btn btn-primary">MobileNet</button>
-    <div class="btn-group">
-     <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">ResNet <span class="caret"></span></button>
-     <ul class="dropdown-menu">
-      <li><a href="#">Action</a></li>
-      <li><a href="#">Another action</a></li>
-      <li class="divider"></li>
-      <li><a href="#">Separated link</a></li>
-     </ul>
-    </div>
-   </div> -->
                </div>
                <div class="card-body">
                   <h2 class="title">Transfer learning</h2>
@@ -91,10 +74,15 @@
                         <input class="form-control" type="text" placeholder="Learning Rate" name="learnrateVal">
                      </div>
                      <div class="p-t-10">
-                        <button class="btn btn--pill btn--green" type="submit" name="train" value="Train">Train</button>
+                         <a href="{% url 'monitor_training' %}">
+                             <button class="button" type="submit" name="train" value="Train">Train</button></a>
                      </div>
-
-                  </form>
+                </form>
+                   <!--
+                    <button class="button">Monitor</button>
+                       <button class="button" type="submit" name="train" value="Train">Train/Monitor</button>
+                </a> -->
+                   <p><i>{{ message }}</i></p>
                </div>
             </div>
          </div>

@@ -65,7 +65,7 @@ html {
 *, *:before, *:after {
   -webkit-box-sizing: inherit;
   -moz-box-sizing: inherit;
-  box-sizing: conten-box;
+  box-sizing: content-box;
 }
 
 /* ==========================================================================
@@ -109,12 +109,6 @@ fieldset {
   min-width: 0;
   /* [1] */
   border: 0;
-}
-
-button {
-  outline: darkviolet;
-  background: darkviolet;
-  border: none;
 }
 
 /* ==========================================================================
@@ -250,6 +244,7 @@ h6 {
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px;
+
 }
 
 
@@ -263,17 +258,33 @@ h6 {
 
 p{
   font-family: arial;
+  color:white;
   font-weight: bold;
+
 }
+i{font-style:normal;}
+form input[type="submit"] {
+  display: inline-block;
+  padding: 10px;
+  background-color: #000000;
+  color: #ffffff;
+  float: left;
+  margin:5px;
+}
+
 .button{
-  background-color: #2a609a;
-	width: 130px;
-	height: 60px;
+  display: inline-block;
+  background-color: darkviolet;
+	width: 85px;
+	height: 50px;
   color: white;
   outline: none;
   font-size: 16px;
   border: none;
   cursor: pointer;
+}
+.B1 {
+ margin-right: 100px;
 }
 
 .block-display button{
@@ -516,6 +527,10 @@ input {
   -moz-border-radius: 3px;
   border-radius: 3px;
   background: #fff;
+}
+
+form {
+  display: inline-block;
 }
 
 .card-3 {

@@ -5,7 +5,7 @@ from app.views import Home,Registration
 from django.conf.urls.static import static
 from django.conf import settings
 
-
+#app_name = 'app'
 urlpatterns = [
     #path('admin/', admin.site.urls),
     path('', Registration.users, name='users'),
@@ -20,7 +20,9 @@ urlpatterns = [
     #url('table',Home.table, name='table'),
     url('Multimodality',Home.loadData, name='Multimodality'),
     url('shapley_value',Home.shapley_values, name='shapley'),
-    url('training', Home.training_model, name='training'),
+    #url('training', Home.training_model, name='training'),
+    url('training',Home.run_training,name ='training'),
+    url('monitor',Home.monitor_training,name ='monitor_training'),
     url('testing',Home.testing, name='testing'),
     url('heat_maps',Home.heat_maps, name='heat_maps'),
     url('activation_maps',Home.activation_maps, name='activation_maps'),
