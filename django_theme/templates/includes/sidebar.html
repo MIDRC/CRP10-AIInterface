@@ -1,99 +1,100 @@
 <div class="sidebar">
-<div class="sidebar-wrapper">
-<div class="logo">
-   <a target="_blank" 
-      href="https://www.creative-tim.com/product/black-dashboard-django" class="simple-text logo-normal">
-   CRP10 AI Interface
-   </a>
-</div>
-    <nav class="nav">
-            {% if request.user.is_authenticated %}
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDatabase" aria-expanded="false" aria-controls="collapseDatabase">
-                <p> <i class="fas fa-database" ></i> Launch data Portal  </p>
+   <div class="sidebar-wrapper">
+      <div class="logo">
+         <a target="_blank"
+            href="https://www.creative-tim.com/product/black-dashboard-django" class="simple-text logo-normal">
+         CRP10 AI Interface
+         </a>
+      </div>
+      <nav class="nav">
+         {% if request.user.is_authenticated %}
+         <!--<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDatabase" aria-expanded="false" aria-controls="collapseDatabase">
+            <p> <i class="fas fa-database" ></i> Launch data Portal  </p>
             </a>
             <div class="collapse" id="collapseDatabase" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
-               <nav class="sb-sidenav-menu-nested nav">
-                  <strong><a class="nav-link" href="Multimodality.html">Get data from Gen3</a></strong>
-               </nav>
-            </div>
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDNN" aria-expanded="false" aria-controls="collapseDNN">
-               <i class="fas fa-eye"></i>
-               <p> DNN prediction</p>
-            </a>
-            <div class="collapse" id="collapseDNN" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#modelCollapse" aria-expanded="false" aria-controls="modelCollapse" >
-                           Training
-                        </a>
-                        <div class="collapse" id="modelCollapse" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
-                           <nav class="sb-sidenav-menu-nested nav">
-                              <strong><a class="nav-link" href="training.html">Pre-training</a></strong>
-                              <strong><a class="nav-link" href="training_scratch.html">Training from zero</a></strong>
-                           </nav>
-                        </div>
-               <nav class="sb-sidenav-menu-nested nav">
-                  <strong><a class="nav-link" href="testing.html">TESTING</a></strong>
-               </nav>
-                 </nav>
-            </div>
+            <nav class="sb-sidenav-menu-nested nav">
+              <strong><a class="nav-link" href="ui-database.html">Get data from Gen3</a></strong>
+            </nav>
+            </div> -->
 
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseExplainabilityMethods" aria-expanded="false" aria-controls="collapseExplainabilityMethods">
-                     <i class="fas fa-book-open"></i>
-              <p>Explainability</p>
+  <!-- / Introduction Block -->
 
-                  </a>
-                  <div class="collapse" id="collapseExplainabilityMethods" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
-                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#modelCollapse" aria-expanded="false" aria-controls="modelCollapse" >
-                           MODEL
-                        </a>
-                        <div class="collapse" id="modelCollapse" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
-                           <nav class="sb-sidenav-menu-nested nav">
-                              <strong><a class="nav-link" href="shapley_value.html">SHAPLEY VALUE</a></strong>
-                              <strong><a class="nav-link" href="lime_technique.html">LIME TECHNIQUE</a></strong>
-                           </nav>
-                        </div>
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dataCollapse" aria-expanded="false" aria-controls="dataCollapse">
-                           DATA
+  <!-- /////////// Begin Dropdown //////////// -->
+              <div class='swanky'>
+  <div class='swanky_wrapper'>
+    <input id='Dashboard' name='radio' type='radio'>
+    <label for='Dashboard'>
+      <i class="fas fa-database" ></i><span><a href ="https://data.midrc.org/explorer">Launch Gen3</a></span>
+    </label>
+    <input id='Sales' name='radio' type='radio'>
+    <label for='Sales'>
+      <i class="fas fa-eye"></i>
+      <span>DNN stages</span>
+      <div class='lil_arrow'></div>
+      <div class='bar'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+            <li><a href ="training.html">Training</a></li>
+            <li><a href ="testing.html">Testing</a></li>
+        </ul>
 
-                        </a>
-                        <div class="collapse" id="dataCollapse" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
-                           <nav class="sb-sidenav-menu-nested nav">
-                              <strong><a class="nav-link" href="pca.html">PCA</a></strong>
-                              <strong><a class="nav-link" href="tsne.html">T-SNE</a></strong>
-                              <strong><a class="nav-link" href="umap.html">UMAP</a></strong>
-                           </nav>
-                        </div>
-                     </nav>
-                  </div>
-
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVisualization" aria-expanded="false" aria-controls="collapseVisualization">
-                     <i class="fas fa-chart-area"></i>
-                      <p>VISUALIZATION</p>
-                  </a>
-                  <div class="collapse" id="collapseVisualization" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
-                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="heat_maps.html">HEAT MAPS</a>
-                        <a class="nav-link" href="activation_maps.html">ACTIVATION MAPS</a>
-                     </nav>
-                  </div>
-
-                  <a class="nav-link collapsed" href="run.html">
-                     <i class="fas fa-table"></i>
-                     <p>Tables</p>
-                  </a>
-          </li>
-            {% else %}
-          <li class="active">
+      </div>
+    </label>
+    <input id='Messages' name='radio' type='radio'>
+    <label for='Messages'>
+      <i class="fas fa-chart-area"></i>
+      <span>Visualization</span>
+      <div class='lil_arrow'></div>
+      <div class='bar'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li><a href ="heat_maps.html">Heat Maps</a></li>
+            <li><a href ="activation_maps.html">Activation Maps</a></li>
+        </ul>
+      </div>
+    </label>
+    <input id='Users' name='radio' type='radio'>
+    <label for='Users'>
+      <i class="fas fa-book-open"></i>
+      <span>Explainability</span>
+      <div class='lil_arrow'></div>
+      <div class='bar'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li>PCA</li>
+          <li>t-SNE</li>
+          <li>Shapley</li>
+          <li>LIME</li>
+        </ul>
+      </div>
+    </label>
+    <input id='Settings' radio='radio' type='radio'>
+    <label for='Settings'>
+      <i class="fas fa-table"></i>
+      <span>Documentation</span>
+      <div class='lil_arrow'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li>Databases</li>
+          <li>Design</li>
+          <li>Change User</li>
+          <li>Log Out</li>
+        </ul>
+      </div>
+    </label>
+  </div>
+         </li>
+         {% else %}
+         <li class="active">
             <a target="_blank"
                href="https://www.creative-tim.com/product/black-dashboard-pro-django">
-              <i class="tim-icons icon-spaceship"></i>
-              <p>PRO Version</p>
+               <i class="tim-icons icon-spaceship"></i>
+               <p>PRO Version</p>
             </a>
-          </li>
-          {% endif %}
+         </li>
+         {% endif %}
+         </ul>
+      </nav>
+   </div>
+</div>
 
-        </ul>
-    </nav>
-      </div>
-    </div>

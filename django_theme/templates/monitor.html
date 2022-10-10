@@ -1,5 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'layouts/base.html' %}
+{% block title %} Transfer Learning {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<!--<!DOCTYPE html>
+<html lang="en"> -->
+   {% load static %}
+    <style>
+    .container d-flex justify-content-center jumbotron text-center col-md-7 progress{height:2rem;}
+    </style>
     <head>
         <meta charset="UTF-8">
         <title>Title</title>
@@ -14,7 +25,7 @@
                     {% for job_name, state, progress, task_id in info %}
                         <tr>
                             <td>{{ job_name }}</td>
-                            <td style="width:100%;">
+                            <td style="width:100%; height: 2rem">
                                 <div class="progress" >
                                     <div class="progress-bar" role="progressbar" style="width: {{ progress }}%"
                                          aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ state }}
@@ -36,3 +47,11 @@
         </div>
     </body>
 </html>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+
+{% endblock javascripts %}

@@ -4,7 +4,20 @@
 <!-- Specific Page CSS goes HERE  -->
 
 {% block content %}
-
+{% load static %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card card-plain">
+      <div class="card-header">
+        MIDRC
+      </div>
+      <div class="card-body">
+          <img src="{% static 'images/MIDRC-Logo-Vertical-Version1.jpg' %}" class="rounded img-fluid d-block mx-auto" alt="App">
+        <div id="map" class="map"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}
 

@@ -59,7 +59,7 @@ html {
 
 * {
   padding: 0;
-  margin: auto;
+  margin: initial;
 }
 
 *, *:before, *:after {
@@ -262,7 +262,7 @@ p{
   font-weight: bold;
 
 }
-i{font-style:normal;}
+/*i{font-style:normal;}
 form input[type="submit"] {
   display: inline-block;
   padding: 10px;
@@ -271,7 +271,7 @@ form input[type="submit"] {
   float: left;
   margin:5px;
 }
-
+*/
 .button{
   display: inline-block;
   background-color: darkviolet;
@@ -546,7 +546,7 @@ form {
 }
 
 .card-3 .card-heading {
-  background: url("../images/bg-heading-03.jpg") top left/cover no-repeat;
+  background: url("https://cdn.analyticsvidhya.com/wp-content/uploads/2021/05/46079cnn.jpg") top center/cover no-repeat;
   display: table-cell;
   width: 50%;
 }
@@ -637,3 +637,153 @@ form {
     #divMenu a:hover {
         font-weight: bold;
     }
+
+    .switchHolder {
+  margin-top: -2px;
+  width: 33%;
+  float: left;
+  height: 85px;
+}
+
+.modeHolder {
+  height: 51%;
+}
+
+.toggle {
+  float: left;
+  width: 25%;
+}
+
+.mode {
+  text-align: left;
+  margin-top: 20px;
+  float: left;
+  width: 30%;
+}
+
+.infoIcon {
+  margin-top: 5px;
+  width: 10%;
+  float: right;
+  color:white;
+}
+
+
+.infoIcon {
+  position: relative;
+}
+
+.extraInfo {
+  position: absolute;
+  color: #fff;
+  background-color: black;
+  border-radius: 5px;
+  padding: 2px 5px;
+  width: 70px;
+  text-align: center;
+  visibility: hidden;
+  /*   display: none; */
+}
+
+.infoIcon:hover .extraInfo {
+  visibility: visible;
+}
+
+.infoIcon img {
+  width: 15px;
+}
+
+.settings {
+  float: left;
+  width: 35%;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.settings img {
+  width: 15px;
+}
+
+.switchHolder:nth-of-type(1) {
+  border-right: 1px inset #161618;
+}
+
+.switchHolder:nth-of-type(2) {
+  border-right: 1px inset #161618;
+}
+
+.switchHolder h5 {
+  margin-top: 5px;
+  margin-left: 10px;
+  font-family: montserrat;
+}
+
+.switchHolder p {
+  font-family: michroma;
+  font-size: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: -8px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  margin-top: 10px;
+  margin-left: 13px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 15px;
+  width: 15px;
+  left: 2.5px;
+  bottom: 2.5px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #4bd963;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #4bd963;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(19px);
+  -ms-transform: translateX(19px);
+  transform: translateX(19px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

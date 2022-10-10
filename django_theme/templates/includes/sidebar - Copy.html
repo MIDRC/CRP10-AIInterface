@@ -1,0 +1,214 @@
+<div class="sidebar">
+   <div class="sidebar-wrapper">
+      <div class="logo">
+         <a target="_blank"
+            href="https://www.creative-tim.com/product/black-dashboard-django" class="simple-text logo-normal">
+         CRP10 AI Interface
+         </a>
+      </div>
+      <nav class="nav">
+         {% if request.user.is_authenticated %}
+         <!--<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDatabase" aria-expanded="false" aria-controls="collapseDatabase">
+            <p> <i class="fas fa-database" ></i> Launch data Portal  </p>
+            </a>
+            <div class="collapse" id="collapseDatabase" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+            <nav class="sb-sidenav-menu-nested nav">
+              <strong><a class="nav-link" href="ui-database.html">Get data from Gen3</a></strong>
+            </nav>
+            </div> -->
+         <a class="nav-link collapsed" href="https://data.midrc.org/explorer">
+            <i class="fa fa-database" aria-hidden="true"></i>
+            <p>Launch Data Portal</p>
+         </a>
+
+         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDNN" aria-expanded="false" aria-controls="collapseDNN">
+            <i class="fas fa-eye"></i> DNN stages
+         </a>
+         <div class="collapse" id="collapseDNN" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+               <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#modelCollapse" aria-expanded="false" aria-controls="modelCollapse" >
+               Training
+               </a>
+               <div class="collapse" id="modelCollapse" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                  <nav class="sb-sidenav-menu-nested nav">
+                     <strong><a class="nav-link" href="training.html">Transfer Learning</a></strong>
+                     <strong><a class="nav-link" href="training_scratch.html">Training from scratch</a></strong>
+                  </nav>
+               </div>
+               <nav class="sb-sidenav-menu-nested nav">
+                  <strong><a class="nav-link" href="testing.html">TESTING</a></strong>
+               </nav>
+            </nav>
+         </div>
+         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVisualization" aria-expanded="false" aria-controls="collapseVisualization">
+            <i class="fas fa-chart-area"></i>
+            <p>VISUALIZATION</p>
+         </a>
+         <div class="collapse" id="collapseVisualization" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+            <nav class="sb-sidenav-menu-nested nav">
+               <a class="nav-link" href="heat_maps.html">HEAT MAPS</a>
+               <a class="nav-link" href="activation_maps.html">ACTIVATION MAPS</a>
+            </nav>
+         </div>
+         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseExplainabilityMethods" aria-expanded="false" aria-controls="collapseExplainabilityMethods">
+            <i class="fas fa-book-open"></i>
+            <p>Explainability</p>
+         </a>
+         <div class="collapse" id="collapseExplainabilityMethods" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+               <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#modelCollapse" aria-expanded="false" aria-controls="modelCollapse" >
+               MODEL
+               </a>
+               <div class="collapse" id="modelCollapse" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                  <nav class="sb-sidenav-menu-nested nav">
+                     <strong><a class="nav-link" href="shapley_value.html">SHAPLEY VALUE</a></strong>
+                     <strong><a class="nav-link" href="lime_technique.html">LIME TECHNIQUE</a></strong>
+                  </nav>
+               </div>
+               <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dataCollapse" aria-expanded="false" aria-controls="dataCollapse">
+               DATA
+               </a>
+               <div class="collapse" id="dataCollapse" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                  <nav class="sb-sidenav-menu-nested nav">
+                     <strong><a class="nav-link" href="pca.html">PCA</a></strong>
+                     <strong><a class="nav-link" href="tsne.html">T-SNE</a></strong>
+                     <strong><a class="nav-link" href="umap.html">UMAP</a></strong>
+                  </nav>
+               </div>
+            </nav>
+         </div>
+         <!--
+            <a class="nav-link collapsed" href="run.html">
+               <i class="fas fa-table"></i>
+               <p>Documentation</p>
+            </a>-->
+         <div class="dropdown">
+            <button class="dropdown"><i class="fa fa-table"></i> Documentation</button>
+            <div >
+               <a href="#">Link 1</a>
+               <a href="#">Link 2</a>
+               <div class="submenu">
+                  <a href="#">LongL1</a>
+                  <div >
+                     <a href="#">LongL3</a>
+                     <div class="submenu">
+                        <a href="#">LongL4</a>
+                        <div>
+                           <a href="#">LongL6</a>
+                           <a href="#">LongL7</a>
+                        </div>
+                     </div>
+                     <div class="submenu">
+                        <a href="#">LongL5</a>
+                        <div>
+                           <a href="#">LongL8</a>
+                           <div class="submenu">
+                              <a href="#">LongL9</a>
+                              <div>
+                                 <a href="#">LongL10</a>
+                                 <a href="#">LongL11</a>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <a href="#">Long Link 2</a>
+            </div>
+         </div>
+
+            <div class='swanky'>
+  <!-- / Introduction Block -->
+
+  <!-- /////////// Begin Dropdown //////////// -->
+  <div class='swanky_wrapper'>
+    <input id='Dashboard' name='radio' type='radio'>
+    <label for='Dashboard'>
+      <span>Dashboard</span>
+      <div class='lil_arrow'></div>
+      <div class='bar'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li>Tools</li>
+          <li>Reports</li>
+          <li>Analytics</li>
+          <li>Code Blocks</li>
+        </ul>
+      </div>
+    </label>
+    <input id='Sales' name='radio' type='radio'>
+    <label for='Sales'>
+      <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/del.png'>
+      <span>Sales</span>
+      <div class='lil_arrow'></div>
+      <div class='bar'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li>New Sales</li>
+          <li>Expired Sales</li>
+          <li>Sales Reports</li>
+          <li>Deliveries</li>
+        </ul>
+      </div>
+    </label>
+    <input id='Messages' name='radio' type='radio'>
+    <label for='Messages'>
+      <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/mess.png'>
+      <span>Messages</span>
+      <div class='lil_arrow'></div>
+      <div class='bar'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li>Inbox</li>
+          <li>Outbox</li>
+          <li>Sent</li>
+          <li>Archived</li>
+        </ul>
+      </div>
+    </label>
+    <input id='Users' name='radio' type='radio'>
+    <label for='Users'>
+      <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/users.png'>
+      <span>Users</span>
+      <div class='lil_arrow'></div>
+      <div class='bar'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li>New User</li>
+          <li>User Groups</li>
+          <li>Permissions</li>
+          <li>Passwords</li>
+        </ul>
+      </div>
+    </label>
+    <input id='Settings' radio='radio' type='radio'>
+    <label for='Settings'>
+      <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/set.png'>
+      <span>Settings</span>
+      <div class='lil_arrow'></div>
+      <div class='swanky_wrapper__content'>
+        <ul>
+          <li>Databases</li>
+          <li>Design</li>
+          <li>Change User</li>
+          <li>Log Out</li>
+        </ul>
+      </div>
+    </label>
+  </div>
+
+
+         </li>
+         {% else %}
+         <li class="active">
+            <a target="_blank"
+               href="https://www.creative-tim.com/product/black-dashboard-pro-django">
+               <i class="tim-icons icon-spaceship"></i>
+               <p>PRO Version</p>
+            </a>
+         </li>
+         {% endif %}
+         </ul>
+      </nav>
+   </div>
+</div>
