@@ -1,5 +1,13 @@
-<!doctype html>
-<html lang="en"> {% load static %}
+{% extends 'layouts/base.html' %}
+{% block title %} Activation maps {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<!--<!DOCTYPE html>
+<html lang="en"> -->
+   {% load static %}
 
 <head>
 	<title>Multiselect 09</title>
@@ -33,7 +41,7 @@
 			<!--<h2>Input image:</h2>
                 <img src={{filePathName}} class="img-fluid" alt='imagename' style="width: 400px;"> -->
 			<div class="col-md-4 col sm-4">
-				<h2>Activation Map:</h2> <img src={{ActivationMapImgPath}} class="img-fluid" alt='heatmapimage' style="width: 400px;"> {{heatMapImgPath}} </div>
+				<h2>Activation Map:</h2> <img src={{ActivationMapImgPath}} class="img-fluid" alt='' style="width: 400px;"> {{activationMapImgPath}} </div>
 		</section>
 		<script src="{% static 'js/jquery.min_HM.js' %}"></script>
 		<script src="{% static 'js/popper_HM.js' %}"></script>
@@ -43,4 +51,10 @@
 	</form>
 </body>
 
-</html>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+
+{% endblock javascripts %}

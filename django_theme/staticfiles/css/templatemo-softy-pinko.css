@@ -977,15 +977,15 @@ parallax & home seperator
 .counter:before {
   content: '';
   position: absolute;
-  width: 140%;
+  width:200%;
   height: 140%;
   opacity: .90;
-  background-image: url(../images/fun-facts-bg.png);
+  background-image: url(../images/MIDRC+Dashboard_20220418.png);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
   z-index: 2;
-  top: -20%;
+  top: 20%;
   left: -20%;
 }
 

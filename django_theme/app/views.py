@@ -15,6 +15,7 @@ from keract import display_activations,display_heatmaps
 import numpy as np
 import cv2
 import pydicom
+import pickle
 import re
 import tensorflow as tf
 import os
@@ -22,9 +23,11 @@ from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Activation, Flatten
 from tensorflow.keras.models import Model
 from tensorflow import keras
+from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 
 from app.tasks import process, process_training
+from tensorflow.keras import backend as K
 from app.forms import JobForm
 from celery.result import AsyncResult
 from app.models import Tasks
@@ -35,6 +38,7 @@ from django.views.decorators.http import require_http_methods
 
 MODEL=load_model('.\\models\\covidnet.hdf5')
 ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covidCRnet.hdf5')
+covid_kaggle_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covid_kagglenet.hdf5')
 untrain_model = load_model('.\\models\\untrained_model.hdf5')
 data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
 normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"
@@ -89,16 +93,11 @@ class Home(TemplateView):
     # def table(request):
     #     return render(request, 'tables.html')
     # testing comment
+
     def loadData(request):
         if request.method == 'POST':
-            fileObj=request.FILES['filePath']
-            fs=FileSystemStorage()
-            filePathName=fs.save(fileObj.name,fileObj)
-            print(filePathName)
-            filePathName=fs.url(filePathName)
-            context={'filePathName':filePathName}
-            return render(request,'Multimodality.html',context)
-        return render(request,'Multimodality.html')
+            return render(request,'ui-database.html')
+        return render(request,'ui-database.html')
 
     @require_http_methods(["GET", "POST"])
     def run(request):
@@ -133,8 +132,11 @@ class Home(TemplateView):
                 #CRcl_model = Home.model2()
                 #CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=0.001),metrics=["acc"],)
                 #CRcl_model.fit(X_train,y_train,epochs=25,batch_size=10,validation_data=(X_val, y_val),)
-                process_training.delay(job_name = model_input)
+                process_training.delay(Epochs,job_name = model_input)
             #context = ChestCR_model.history['accuracy']
+                return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
+            elif model_input == "Training from scratch":
+                process_training.delay(job_name=model_input)
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
         return render(request, "training.html")
 
@@ -161,6 +163,25 @@ class Home(TemplateView):
     def monitor(request):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
+
+
+    def test_func(covidCR_model_2):
+        fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+        ax[0].plot(covidCR_model_2['acc'])
+        ax[0].plot(covidCR_model_2['val_acc'])
+        ax[0].set_title('model accuracy')
+        ax[0].set_ylabel('accuracy')
+        ax[0].set_xlabel('epoch')
+        ax[0].legend(['train', 'test'], loc='upper left')
+        ax[1].plot(covidCR_model_2['loss'])
+        ax[1].plot(covidCR_model_2['val_loss'])
+        ax[1].set_title('model loss')
+        ax[1].set_ylabel('loss')
+        ax[1].set_xlabel('epoch')
+        ax[1].legend(['train', 'test'], loc='upper left')
+        output_image = r'./media/test_roc_ret.png'
+        plt.savefig(output_image)
+        return output_image
 
     @require_GET
     def cancel_job(request, task_id=None):
@@ -223,6 +244,45 @@ class Home(TemplateView):
         # soft = Dense(1, activation='sigmoid')(model.layers[-1].output)
         model = Model(inputs=model.inputs, outputs=pred)
         return model
+   # Training from scratch model
+
+
+    def conv2d_block(input_tensor, n_filters, kernel_size=3):
+        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(input_tensor)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(x)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+        x = Conv2D(filters=2 * n_filters, strides=(2, 2), kernel_size=kernel_size, kernel_initializer="he_normal",
+                   padding="same")(x)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+
+        return x
+
+
+    def model4(n_classes, input_shape):
+        '''
+           Classifier following encoder with random initialization (inspired by VGG structure)
+           input size must be fixed due to Flat+Dense
+
+           n_classes: number of ground truth classes
+           input_shape: shape of single input datum
+           '''
+        global Input
+        Input = Input(input_shape, K.learning_phase())
+        x = Home.conv2d_block(Input, 8)
+        x = Home.conv2d_block(Input, 16)
+        x = Home.conv2d_block(Input, 32)
+        x = Home.conv2d_block(Input, 64)
+        flat = Flatten()(x)
+        proj = Dense(1024, activation="relu")(flat)
+        soft = Dense(n_classes, activation="softmax")(proj)
+
+        model = Model(inputs=[Input], outputs=[soft])
+
+        return model
 
     def training_model(request):
         if request.method == 'POST':
@@ -232,7 +292,6 @@ class Home(TemplateView):
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
-            print(model_input)
             if model_input == "Transfer learning":
                 # load data paths, process scans to obtain pixel array and generate labels
                 print('You have chosen:', model_input,
@@ -265,7 +324,7 @@ class Home(TemplateView):
                 CRcl_model.fit(
                     X_train,
                     y_train,
-                    epochs=25,
+                    epochs=5,
                     batch_size=10,
                     validation_data=(X_val, y_val),
                 )
@@ -315,7 +374,8 @@ class Home(TemplateView):
                 return render(request,'error.html')
             else:   
                 filePathName=fs.save(fileObj.name,fileObj)
-                filePathName=fs.url(filePathName)  
+                filePathName=fs.url(filePathName)
+                print(filePathName)
                 test_image = '.'+filePathName
                 #img = tf.keras.preprocessing.image.load_img(test_image,target_size=(Image_Height, Image_Width))
                 #img_nparray = tf.keras.preprocessing.image.img_to_array(img)
@@ -326,7 +386,7 @@ class Home(TemplateView):
                 #print(ChestCR_model.summary())
                 prediction = ChestCR_model.predict(np.expand_dims(test_scan_pred, axis=0))[0]
                 scores = [1 - prediction[0], prediction[0]]
-                class_names = ["normal", "abnormal"]
+                class_names = ["Covid -ve", "Covid +ve"]
                 for score, name in zip(scores, class_names):
                     print("This model is %.2f percent confident that Covid scan is %s"
                           % ((100 * score), name))
@@ -341,11 +401,18 @@ class Home(TemplateView):
                     #elif pred == 0:
                         #label='covid'
                 #context = {'message': f'You have chosen {model_input}'}
-                context={'message': f'Model confidence: %.2f Label: %s' % ((final_score1), final_name1),
-                         'message1':f'Model confidence: %.2f Label: %s' % ((final_score2), final_name2)}
+                context={'message': f'Model prediction: %.2f' % ((final_score1)),
+                         'message1': f'Label: %s' % (final_name1),
+                         'message2':'Confidence interval: [73.297,85.228]'}
                 return render(request,'testing.html',context)
         return render(request,'testing.html')
-    
+
+    def plot_acc(request):
+        #plot = Home.test_func(pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\trainHistoryDict_hpt', "rb")))
+        #print(plot)
+        return render(request, 'metrics.html')
+        #return render(request, 'metrics.html', context={'filePathName':plot})
+
     def preprocess_image(img_path, model=None, rescale=255, resize=(256, 256)):    
         assert type(img_path) == str, "Image path must be a string"
         assert (
@@ -363,24 +430,31 @@ class Home(TemplateView):
             if len(model.input_shape) == 4:
                 img = np.expand_dims(img, axis=0)
         return img
-            
+
+
     def heat_maps(request):
-        DNN_layers = [layer.name for layer in untrain_model.layers]
+        DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
         if request.method == 'POST':
             layer = request.POST.get('layers')
-            fileObj=request.FILES['filePath']
-            fs=FileSystemStorage()
-            filePathName=fs.save(fileObj.name,fileObj)
-            filePathName=fs.url(filePathName)
-            test_image = '.'+filePathName
-            input_test = Home.preprocess_image(img_path=test_image,model=MODEL,resize=(Image_Height, Image_Width))
-            activations = get_activations(MODEL, input_test,layer)
+            fileObj = request.FILES['filePath']
+            fs = FileSystemStorage()
+            filePathName = fs.save(fileObj.name, fileObj)
+            filePathName = fs.url(filePathName)
+            test_image = '.' + filePathName
+            #input_test = Home.process_scan(test_image)
+            #activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
+            input_test = Home.preprocess_image(img_path=test_image, model=covid_kaggle_model,
+                                               resize=(Image_Height, Image_Width))
+            activations = get_activations(covid_kaggle_model, input_test, layer)
             heatMapImgPath = display_heatmaps(activations, input_test, directory=r'./media/', save=True)
-            return render(request,'heat_maps.html',{"layer_name": layer,"DNN_layers": DNN_layers,'filePathName':filePathName,'heatMapImgPath':heatMapImgPath})
-        return render(request,'heat_maps.html',{"DNN_layers": DNN_layers})
+            print( heatMapImgPath)
+            return render(request, 'heat_maps.html',
+                      {"layer_name": layer, "DNN_layers": DNN_layers, 'filePathName': filePathName,
+                       'HeatMapImgPath':  heatMapImgPath})
+        return render(request, 'heat_maps.html', {"DNN_layers": DNN_layers})
     
     def activation_maps(request):
-        DNN_layers = [layer.name for layer in untrain_model.layers]
+        DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj=request.FILES['filePath']
@@ -388,11 +462,15 @@ class Home(TemplateView):
             filePathName=fs.save(fileObj.name,fileObj)
             filePathName=fs.url(filePathName)
             test_image = '.'+filePathName
-            input_test = Home.preprocess_image(img_path=test_image,model=MODEL,resize=(Image_Height, Image_Width))
-            activations = get_activations(MODEL, input_test,layer)
+            #input_test = Home.process_scan(test_image)
+            #activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
+            input_test = Home.preprocess_image(img_path=test_image,model=covid_kaggle_model,resize=(Image_Height, Image_Width))
+            activations = get_activations(covid_kaggle_model, input_test,layer)
             activationMapImgPath = display_activations(activations, directory=r'./media/', save=True)
             print(activationMapImgPath)
-            return render(request,'activation_maps.html',{"layer_name": layer,"DNN_layers": DNN_layers,'filePathName':filePathName,'ActivationMapImgPath':activationMapImgPath})
+            return render(request,'activation_maps.html',
+                          {"layer_name": layer,"DNN_layers": DNN_layers,'filePathName':filePathName,
+                                                          'ActivationMapImgPath':activationMapImgPath})
         return render(request,'activation_maps.html',{"DNN_layers": DNN_layers})
 
     def shapley_values(request):

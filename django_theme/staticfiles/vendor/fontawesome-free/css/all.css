@@ -752,8 +752,9 @@ readers do not read off random characters that represent icons */
 .fa-car-side:before {
   content: "\f5e4"; }
 
-.fa-caret-down:before {
-  content: "\f0d7"; }
+.fa-caret-down:before{
+  float:right;
+  content: blue; }
 
 .fa-caret-left:before {
   content: "\f0d9"; }

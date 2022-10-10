@@ -1,13 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'layouts/base.html' %}
+{% block title %} Transfer Learning {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<!--<!DOCTYPE html>
+<html lang="en"> -->
    {% load static %}
    <head>
       <!-- Required meta tags-->
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <meta name="description" content="Colorlib Templates">
-      <meta name="author" content="Colorlib">
-      <meta name="keywords" content="Colorlib Templates">
       <!-- Title Page-->
       <title>training</title>
       <!-- Icons font CSS-->
@@ -22,13 +26,17 @@
       <link rel="stylesheet" href="{% static 'css/main_training.css' %}" media="all">
    </head>
    <body>
-      <div class="page-wrapper bg-gra-01 p-t-180 p-b-100 font-poppins">
+
          <div class="wrapper wrapper--w780">
             <div class="card card-3">
                <div class="card-heading">
                </div>
                <div class="card-body">
-                  <h2 class="title">Transfer learning</h2>
+                  <h2 class="title">DNN Model Training</h2>
+                  <div class="infoIcon">
+          <a href="#" class="a"><img src="https://cdn.onlinewebfonts.com/svg/img_151567.png" alt="info icon" /></a>
+          <span class="extraInfo">Extra Info</span>
+        </div>
                   <form method="POST">
                      {% csrf_token %}
                       <div class="input-group">
@@ -103,3 +111,11 @@
    <!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
 <!-- end document-->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+
+{% endblock javascripts %}
