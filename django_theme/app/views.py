@@ -235,44 +235,6 @@ class Home(TemplateView):
         return model
    # Training from scratch model
 
-
-    def conv2d_block(input_tensor, n_filters, kernel_size=3):
-        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(input_tensor)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(x)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-        x = Conv2D(filters=2 * n_filters, strides=(2, 2), kernel_size=kernel_size, kernel_initializer="he_normal",
-                   padding="same")(x)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-
-        return x
-
-
-    def model4(n_classes, input_shape):
-        '''
-           Classifier following encoder with random initialization (inspired by VGG structure)
-           input size must be fixed due to Flat+Dense
-
-           n_classes: number of ground truth classes
-           input_shape: shape of single input datum
-           '''
-        global Input
-        Input = Input(input_shape, K.learning_phase())
-        x = Home.conv2d_block(Input, 8)
-        x = Home.conv2d_block(Input, 16)
-        x = Home.conv2d_block(Input, 32)
-        x = Home.conv2d_block(Input, 64)
-        flat = Flatten()(x)
-        proj = Dense(1024, activation="relu")(flat)
-        soft = Dense(n_classes, activation="softmax")(proj)
-
-        model = Model(inputs=[Input], outputs=[soft])
-
-        return model
-
     def training_model(request):
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
