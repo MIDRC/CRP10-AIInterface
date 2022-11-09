@@ -416,7 +416,6 @@ class Home(TemplateView):
         canvas.print_png(response)
         return response
 
-
     def preprocess_image(img_path, model=None, rescale=255, resize=(256, 256)):    
         assert type(img_path) == str, "Image path must be a string"
         assert (
