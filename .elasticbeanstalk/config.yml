@@ -1,0 +1,20 @@
+branch-defaults:
+  master:
+    environment: Midrcapi-env-1
+environment-defaults:
+  Midrcapi-env-1:
+    branch: null
+    repository: null
+global:
+  application_name: MIDRC-API
+  default_ec2_keyname: Django-key
+  default_platform: Python 3.8 running on 64bit Amazon Linux 2
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  no-verify-ssl: true
+  platform_name: null
+  platform_version: null
+  profile: eb-cli
+  sc: git
+  workspace_type: Application

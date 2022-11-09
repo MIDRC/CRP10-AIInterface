@@ -51,6 +51,28 @@
                            <div class="select-dropdown"></div>
                         </div>
                      </div>
+                      <div class="input-group">
+                        <div class="rs-select2 js-select-simple select--no-search">
+                           <select name="augVal" onchange="displayOptions('checkbox-test', this)">
+                              <option disabled="disabled" selected="selected">Data Augmentation</option>
+                              <option>Yes</option>
+                              <option>No</option>
+                           </select>
+                           <div class="select-dropdown"></div>
+                        </div>
+                     </div>
+                     <div class="checkbox-test">
+                           <input type="checkbox" id="Rotate" name="augment" value="Rotate">
+                           <label for="Rotate">Rotate</label>
+                           <input type="checkbox" id="Zoom" name="augment" value="Zoom">
+                           <label for="Zoom">Zoom</label>
+                           <input type="checkbox" id="VFlip" name="augment" value="VFlip">
+                           <label for="VFlip">verticalflip</label>
+                           <input type="checkbox" id="HFlip" name="augment" value="HFlip">
+                           <label for="HFlip">horizontalflip</label>
+                           <input type="checkbox" id="shear" name="augment" value="shear">
+                           <label for="shear">Shear</label>
+                     </div>
                      <div class="input-group">
                         <input class="form-control" type="text" placeholder="Epochs"  name="epochVal">
                      </div>
@@ -61,6 +83,10 @@
                               <option>Adam</option>
                               <option>RMSProp</option>
                               <option>SGD</option>
+                               <option>MB-SGD</option>
+                               <option>ADA grad</option>
+                               <option>ADA delta</option>
+                               <option>NGA</option>
                            </select>
                            <div class="select-dropdown"></div>
                         </div>
@@ -71,6 +97,10 @@
                               <option disabled="disabled" selected="selected">Loss</option>
                               <option>BCE loss</option>
                               <option>CCE loss</option>
+                               <option>hinge loss</option>
+                               <option>MSLE loss</option>
+                               <option>MAE loss</option>
+                               <option>CLD loss</option>
                            </select>
                            <div class="select-dropdown"></div>
                         </div>
@@ -95,6 +125,11 @@
             </div>
          </div>
       </div>
+      <script>
+          function displayOptions(className, elementValue){
+            document.getElementsByClassName(className)[0].style.display = elementValue.value == "Yes" ? 'block' : 'none';
+          };
+      </script>
       <!-- Jquery JS-->
       <script type="javascript" href="{% static 'js/jquery.min.js' %}"></script>
       <script type="javascript" href="{% static 'js/celery_progress.js' %}"></script>

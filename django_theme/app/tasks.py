@@ -25,7 +25,7 @@ def process(self, job_name=None):
 
 
 @app.task(bind=True)
-def process_training(self,Epochs,job_name =None):
+def process_training(self,Epochs,Batch_Size,learningrate,job_name =None):
     b = Tasks(task_id=self.request.id,job_name=job_name)
     b.save()
 
@@ -36,8 +36,8 @@ def process_training(self,Epochs,job_name =None):
     #sleep(random.randint(5, 10))
     self.update_state(state='compiling', meta={'progress': '66'})
     CRcl_model = views.Home.model2()
-    CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=0.001),metrics=["acc"],)
+    CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=learningrate),metrics=["acc"],)
     #sleep(random.randint(5, 10))
     self.update_state(state='fitting and training model', meta={'progress': '100'})
-    CRcl_model.fit(X_train, y_train, epochs=Epochs, batch_size=10, validation_data=(X_val, y_val),)
+    CRcl_model.fit(X_train, y_train, epochs=Epochs, batch_size=Batch_Size, validation_data=(X_val, y_val),)
     #sleep(random.randint(5, 10))

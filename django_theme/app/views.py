@@ -1,7 +1,11 @@
+import PIL
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.core.files.storage import FileSystemStorage
+from django.utils.baseconv import base64
 from keras.preprocessing.image import ImageDataGenerator,load_img, img_to_array
 from django.views.generic import TemplateView
+from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -17,8 +21,11 @@ import cv2
 import pydicom
 import pickle
 import re
+import io
 import tensorflow as tf
 import os
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Activation, Flatten
 from tensorflow.keras.models import Model
@@ -26,6 +33,9 @@ from tensorflow import keras
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 
+from io import  StringIO
+from matplotlib import pylab
+from pylab import *
 from app.tasks import process, process_training
 from tensorflow.keras import backend as K
 from app.forms import JobForm
@@ -117,24 +127,23 @@ class Home(TemplateView):
         #return render(request, 'run.html')
 
     def run_training(request):
+        print("request is:", request)
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
-            batchsize = int(request.POST.get('batchsizeVal'))
+            Augument = request.POST.getlist('augment')
+            print("augumentation value is:  ", Augument)
+            Batch_Size = int(request.POST.get('batchsizeVal'))
             learningrate = request.POST.get('learnrateVal')
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
+            aug_value = request.POST.get('augVal')
             if model_input == "Fine tuning":
                 # load data paths, process scans to obtain pixel array and generate labels
-                #print('You have chosen:', model_input,
-                 #     ",extracting the pixel array of dicom images to train the model...")
-                #X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path, abnormal_scan_path)
-                #CRcl_model = Home.model2()
-                #CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=0.001),metrics=["acc"],)
-                #CRcl_model.fit(X_train,y_train,epochs=25,batch_size=10,validation_data=(X_val, y_val),)
-                process_training.delay(Epochs,job_name = model_input)
-            #context = ChestCR_model.history['accuracy']
-                return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
+                if aug_value =="Yes":
+                    process_training.delay(Epochs,Batch_Size,learningrate,job_name = model_input)
+                    #context = ChestCR_model.history['accuracy']
+                    return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
             elif model_input == "Training from scratch":
                 process_training.delay(job_name=model_input)
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
@@ -164,25 +173,6 @@ class Home(TemplateView):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
 
-
-    def test_func(covidCR_model_2):
-        fig, ax = plt.subplots(1, 2, figsize=(14, 5))
-        ax[0].plot(covidCR_model_2['acc'])
-        ax[0].plot(covidCR_model_2['val_acc'])
-        ax[0].set_title('model accuracy')
-        ax[0].set_ylabel('accuracy')
-        ax[0].set_xlabel('epoch')
-        ax[0].legend(['train', 'test'], loc='upper left')
-        ax[1].plot(covidCR_model_2['loss'])
-        ax[1].plot(covidCR_model_2['val_loss'])
-        ax[1].set_title('model loss')
-        ax[1].set_ylabel('loss')
-        ax[1].set_xlabel('epoch')
-        ax[1].legend(['train', 'test'], loc='upper left')
-        output_image = r'./media/test_roc_ret.png'
-        plt.savefig(output_image)
-        return output_image
-
     @require_GET
     def cancel_job(request, task_id=None):
         result = AsyncResult(task_id)
@@ -202,7 +192,6 @@ class Home(TemplateView):
         scan = scan.pixel_array
         scan = cv2.resize(scan, (224, 224))
         return scan
-
 
     def scanpath(Base_path):
        scans = []
@@ -403,15 +392,30 @@ class Home(TemplateView):
                 #context = {'message': f'You have chosen {model_input}'}
                 context={'message': f'Model prediction: %.2f' % ((final_score1)),
                          'message1': f'Label: %s' % (final_name1),
-                         'message2':'Confidence interval: [73.297,85.228]'}
+                         }
                 return render(request,'testing.html',context)
         return render(request,'testing.html')
 
     def plot_acc(request):
-        #plot = Home.test_func(pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\trainHistoryDict_hpt', "rb")))
-        #print(plot)
-        return render(request, 'metrics.html')
-        #return render(request, 'metrics.html', context={'filePathName':plot})
+        covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\finetuning_imagenet_hpt', "rb"))
+        fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+        ax[0].plot(covidCR_model_2['acc'])
+        ax[0].plot(covidCR_model_2['val_acc'])
+        ax[0].set_title('model accuracy')
+        ax[0].set_ylabel('accuracy')
+        ax[0].set_xlabel('epoch')
+        ax[0].legend(['train', 'test'], loc='upper left')
+        ax[1].plot(covidCR_model_2['loss'])
+        ax[1].plot(covidCR_model_2['val_loss'])
+        ax[1].set_title('model loss')
+        ax[1].set_ylabel('loss')
+        ax[1].set_xlabel('epoch')
+        ax[1].legend(['train', 'test'], loc='upper left')
+        canvas = FigureCanvasTkAgg(fig)
+        response = HttpResponse(content_type='image/png')
+        canvas.print_png(response)
+        return response
+
 
     def preprocess_image(img_path, model=None, rescale=255, resize=(256, 256)):    
         assert type(img_path) == str, "Image path must be a string"

@@ -25,12 +25,25 @@
 </head>
 <br>
 <body class="text-center">
-       <!-- <img src={{filePathName}} class="img-fluid" alt='' style="width: 1000px; height:500px;"> -->
-       <img src={% static 'images/cross_val_plot.png' %} class="img-fluid" alt='' style="width: 1000px; height:500px;">
+      <!-- <img src= class="img-fluid" alt='' style="width: 1000px; height:500px;"> -->
+        <img src="/plot_acc/" class="img-fluid" alt='' style="width: 400px;">
+     <!-- <a href="#" id="plot">Plot</a>
+<div id="imagediv"></div>
+
+$('#plot').click(function(){
+$.ajax({
+        "type"     : "GET",
+        "url"      : "/Plot/",
+        "data"     : "str",
+        "cache"    : false,
+        "success"  : function(data) {
+            $('#imagediv').html(data);
+        }
+}); -->
+
  <!-- <button class="btn-secondary">Copy</button>
   <button class="btn-secondary-custom">Paste</button>-->
 </div>
-
 
 </body>
 {% endblock content %}

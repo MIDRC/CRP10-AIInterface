@@ -28,7 +28,7 @@ SECRET_KEY = 'dvh08$unj$vf-x7(n-n#w@y*xy!2^sv25a)5=tkkn)2c@@@%4#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['Midrcapi-env-2.eba-aisjbcr7.us-east-1.elasticbeanstalk.com', '127.0.0.1']
 
 
 # Application definition
