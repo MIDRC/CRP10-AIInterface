@@ -1,4 +1,4 @@
-
+Django_VirtualEnv/*
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
