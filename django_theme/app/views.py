@@ -25,8 +25,11 @@ import io
 import tensorflow as tf
 import os
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 =======
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 from tensorflow.keras.applications.vgg19 import VGG19
@@ -37,9 +40,12 @@ from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 from io import  StringIO
 from matplotlib import pylab
 from pylab import *
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 =======
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 from app.tasks import process, process_training
@@ -134,6 +140,7 @@ class Home(TemplateView):
 
     def run_training(request):
 <<<<<<< HEAD
+<<<<<<< HEAD
         print("request is:", request)
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
@@ -145,10 +152,16 @@ class Home(TemplateView):
             Epochs = int(request.POST.get('epochVal'))
             batchsize = int(request.POST.get('batchsizeVal'))
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+=======
+        if request.method == 'POST':
+            Epochs = int(request.POST.get('epochVal'))
+            batchsize = int(request.POST.get('batchsizeVal'))
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
             learningrate = request.POST.get('learnrateVal')
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
+<<<<<<< HEAD
 <<<<<<< HEAD
             aug_value = request.POST.get('augVal')
             if model_input == "Fine tuning":
@@ -158,6 +171,8 @@ class Home(TemplateView):
                     #context = ChestCR_model.history['accuracy']
                     return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
 =======
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
             if model_input == "Fine tuning":
                 # load data paths, process scans to obtain pixel array and generate labels
                 #print('You have chosen:', model_input,
@@ -169,6 +184,9 @@ class Home(TemplateView):
                 process_training.delay(Epochs,job_name = model_input)
             #context = ChestCR_model.history['accuracy']
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
+<<<<<<< HEAD
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+=======
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
             elif model_input == "Training from scratch":
                 process_training.delay(job_name=model_input)
@@ -200,7 +218,10 @@ class Home(TemplateView):
         return render(request, 'monitor.html', context={'info': info})
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 
     def test_func(covidCR_model_2):
         fig, ax = plt.subplots(1, 2, figsize=(14, 5))
@@ -220,6 +241,9 @@ class Home(TemplateView):
         plt.savefig(output_image)
         return output_image
 
+<<<<<<< HEAD
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+=======
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
     @require_GET
     def cancel_job(request, task_id=None):
@@ -228,7 +252,10 @@ class Home(TemplateView):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 
     @require_GET
     def delete_job(request, task_id=None):
@@ -265,6 +292,7 @@ class Home(TemplateView):
                                                             test_size=0.2, shuffle=True, random_state=8)
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=8)
         return X_train, y_train, X_test, y_test, X_val, y_val
+<<<<<<< HEAD
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 
     @require_GET
@@ -273,6 +301,8 @@ class Home(TemplateView):
         a.delete()
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 
     def process_scan(filepath):
         scan = pydicom.read_file(str(filepath))
@@ -321,6 +351,63 @@ class Home(TemplateView):
         model = Model(inputs=model.inputs, outputs=pred)
         return model
    # Training from scratch model
+
+    def model2(n_classes=2, input_shape=(224, 224, 1)):
+       vgg_model = VGG19(include_top=False, weights=None, input_shape=input_shape)
+       flat = Flatten()(vgg_model.layers[-1].output)
+       proj = Dense(1024, activation='relu')(flat)
+       soft = Dense(1, activation='sigmoid')(proj)
+       model = Model(inputs=vgg_model.inputs, outputs=soft)
+       return model
+
+
+    def model1(input_shape=(224,224,1)):
+        model = VGG19(include_top=True, weights=None, input_shape=input_shape)
+        x = model.layers[-1].output
+        # x=Dense(256)(x)
+        pred = Dense(1, activation='sigmoid')(x)
+        # soft = Dense(1, activation='sigmoid')(model.layers[-1].output)
+        model = Model(inputs=model.inputs, outputs=pred)
+        return model
+   # Training from scratch model
+
+
+    def conv2d_block(input_tensor, n_filters, kernel_size=3):
+        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(input_tensor)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(x)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+        x = Conv2D(filters=2 * n_filters, strides=(2, 2), kernel_size=kernel_size, kernel_initializer="he_normal",
+                   padding="same")(x)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+
+        return x
+
+
+    def model4(n_classes, input_shape):
+        '''
+           Classifier following encoder with random initialization (inspired by VGG structure)
+           input size must be fixed due to Flat+Dense
+
+           n_classes: number of ground truth classes
+           input_shape: shape of single input datum
+           '''
+        global Input
+        Input = Input(input_shape, K.learning_phase())
+        x = Home.conv2d_block(Input, 8)
+        x = Home.conv2d_block(Input, 16)
+        x = Home.conv2d_block(Input, 32)
+        x = Home.conv2d_block(Input, 64)
+        flat = Flatten()(x)
+        proj = Dense(1024, activation="relu")(flat)
+        soft = Dense(n_classes, activation="softmax")(proj)
+
+        model = Model(inputs=[Input], outputs=[soft])
+
+        return model
 
     def model2(n_classes=2, input_shape=(224, 224, 1)):
        vgg_model = VGG19(include_top=False, weights=None, input_shape=input_shape)
@@ -499,7 +586,11 @@ class Home(TemplateView):
                 context={'message': f'Model prediction: %.2f' % ((final_score1)),
                          'message1': f'Label: %s' % (final_name1),
 <<<<<<< HEAD
+<<<<<<< HEAD
                          }
+=======
+                         'message2':'Confidence interval: [73.297,85.228]'}
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 =======
                          'message2':'Confidence interval: [73.297,85.228]'}
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
@@ -507,6 +598,7 @@ class Home(TemplateView):
         return render(request,'testing.html')
 
     def plot_acc(request):
+<<<<<<< HEAD
 <<<<<<< HEAD
         covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\finetuning_imagenet_hpt', "rb"))
         fig, ax = plt.subplots(1, 2, figsize=(14, 5))
@@ -527,10 +619,15 @@ class Home(TemplateView):
         canvas.print_png(response)
         return response
 =======
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
         #plot = Home.test_func(pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\trainHistoryDict_hpt', "rb")))
         #print(plot)
         return render(request, 'metrics.html')
         #return render(request, 'metrics.html', context={'filePathName':plot})
+<<<<<<< HEAD
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+=======
 >>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 
     def preprocess_image(img_path, model=None, rescale=255, resize=(256, 256)):    
