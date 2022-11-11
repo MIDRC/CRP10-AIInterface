@@ -787,7 +787,10 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+<<<<<<< HEAD
 
 .checkbox-test{
   display: none;
 }
+=======
+>>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
