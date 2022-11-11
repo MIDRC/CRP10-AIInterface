@@ -24,14 +24,9 @@ import re
 import io
 import tensorflow as tf
 import os
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+
 from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Activation, Flatten
 from tensorflow.keras.models import Model
@@ -39,15 +34,11 @@ from tensorflow import keras
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 from io import  StringIO
 from matplotlib import pylab
 from pylab import *
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+
 from app.tasks import process, process_training
 from tensorflow.keras import backend as K
 from app.forms import JobForm
@@ -139,30 +130,27 @@ class Home(TemplateView):
         #return render(request, 'run.html')
 
     def run_training(request):
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         print("request is:", request)
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
             Augument = request.POST.getlist('augment')
             print("augumentation value is:  ", Augument)
             Batch_Size = int(request.POST.get('batchsizeVal'))
-=======
+
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
             batchsize = int(request.POST.get('batchsizeVal'))
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-=======
+
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
             batchsize = int(request.POST.get('batchsizeVal'))
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+
             learningrate = request.POST.get('learnrateVal')
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
-<<<<<<< HEAD
-<<<<<<< HEAD
+
             aug_value = request.POST.get('augVal')
             if model_input == "Fine tuning":
                 # load data paths, process scans to obtain pixel array and generate labels
@@ -170,9 +158,7 @@ class Home(TemplateView):
                     process_training.delay(Epochs,Batch_Size,learningrate,job_name = model_input)
                     #context = ChestCR_model.history['accuracy']
                     return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
-=======
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+
             if model_input == "Fine tuning":
                 # load data paths, process scans to obtain pixel array and generate labels
                 #print('You have chosen:', model_input,
@@ -184,10 +170,7 @@ class Home(TemplateView):
                 process_training.delay(Epochs,job_name = model_input)
             #context = ChestCR_model.history['accuracy']
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
-<<<<<<< HEAD
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+
             elif model_input == "Training from scratch":
                 process_training.delay(job_name=model_input)
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
@@ -217,12 +200,6 @@ class Home(TemplateView):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-
     def test_func(covidCR_model_2):
         fig, ax = plt.subplots(1, 2, figsize=(14, 5))
         ax[0].plot(covidCR_model_2['acc'])
@@ -240,22 +217,12 @@ class Home(TemplateView):
         output_image = r'./media/test_roc_ret.png'
         plt.savefig(output_image)
         return output_image
-
-<<<<<<< HEAD
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
     @require_GET
     def cancel_job(request, task_id=None):
         result = AsyncResult(task_id)
         result.revoke(terminate=True)
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 
     @require_GET
     def delete_job(request, task_id=None):
@@ -292,8 +259,7 @@ class Home(TemplateView):
                                                             test_size=0.2, shuffle=True, random_state=8)
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=8)
         return X_train, y_train, X_test, y_test, X_val, y_val
-<<<<<<< HEAD
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+
 
     @require_GET
     def delete_job(request, task_id=None):
@@ -301,8 +267,7 @@ class Home(TemplateView):
         a.delete()
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+
 
     def process_scan(filepath):
         scan = pydicom.read_file(str(filepath))
@@ -584,22 +549,11 @@ class Home(TemplateView):
                         #label='covid'
                 #context = {'message': f'You have chosen {model_input}'}
                 context={'message': f'Model prediction: %.2f' % ((final_score1)),
-                         'message1': f'Label: %s' % (final_name1),
-<<<<<<< HEAD
-<<<<<<< HEAD
-                         }
-=======
-                         'message2':'Confidence interval: [73.297,85.228]'}
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-=======
-                         'message2':'Confidence interval: [73.297,85.228]'}
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
+                         'message1': f'Label: %s' % (final_name1),}
                 return render(request,'testing.html',context)
         return render(request,'testing.html')
 
     def plot_acc(request):
-<<<<<<< HEAD
-<<<<<<< HEAD
         covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\finetuning_imagenet_hpt', "rb"))
         fig, ax = plt.subplots(1, 2, figsize=(14, 5))
         ax[0].plot(covidCR_model_2['acc'])
@@ -618,17 +572,6 @@ class Home(TemplateView):
         response = HttpResponse(content_type='image/png')
         canvas.print_png(response)
         return response
-=======
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-        #plot = Home.test_func(pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\trainHistoryDict_hpt', "rb")))
-        #print(plot)
-        return render(request, 'metrics.html')
-        #return render(request, 'metrics.html', context={'filePathName':plot})
-<<<<<<< HEAD
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
-=======
->>>>>>> 137e7c53005e671d56870d634c30418058bf83f7
 
     def preprocess_image(img_path, model=None, rescale=255, resize=(256, 256)):    
         assert type(img_path) == str, "Image path must be a string"
