@@ -130,51 +130,26 @@ class Home(TemplateView):
         #return render(request, 'run.html')
 
     def run_training(request):
-
-        print("request is:", request)
-        if request.method == 'POST':
+       print("request is:", request)
+       if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
             Augument = request.POST.getlist('augment')
             print("augumentation value is:  ", Augument)
             Batch_Size = int(request.POST.get('batchsizeVal'))
-
-        if request.method == 'POST':
-            Epochs = int(request.POST.get('epochVal'))
-            batchsize = int(request.POST.get('batchsizeVal'))
-
-        if request.method == 'POST':
-            Epochs = int(request.POST.get('epochVal'))
-            batchsize = int(request.POST.get('batchsizeVal'))
-
             learningrate = request.POST.get('learnrateVal')
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
-
             aug_value = request.POST.get('augVal')
             if model_input == "Fine tuning":
-                # load data paths, process scans to obtain pixel array and generate labels
-                if aug_value =="Yes":
-                    process_training.delay(Epochs,Batch_Size,learningrate,job_name = model_input)
-                    #context = ChestCR_model.history['accuracy']
-                    return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
-
-            if model_input == "Fine tuning":
-                # load data paths, process scans to obtain pixel array and generate labels
-                #print('You have chosen:', model_input,
-                 #     ",extracting the pixel array of dicom images to train the model...")
-                #X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path, abnormal_scan_path)
-                #CRcl_model = Home.model2()
-                #CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=0.001),metrics=["acc"],)
-                #CRcl_model.fit(X_train,y_train,epochs=25,batch_size=10,validation_data=(X_val, y_val),)
-                process_training.delay(Epochs,job_name = model_input)
-            #context = ChestCR_model.history['accuracy']
+                process_training.delay(Epochs,learningrate,Batch_Size,job_name = model_input)
+                #context = ChestCR_model.history['accuracy']
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
 
             elif model_input == "Training from scratch":
                 process_training.delay(job_name=model_input)
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
-        return render(request, "training.html")
+       return render(request, "training.html")
 
     @require_GET
     def monitor_training(request):
@@ -200,23 +175,6 @@ class Home(TemplateView):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
 
-    def test_func(covidCR_model_2):
-        fig, ax = plt.subplots(1, 2, figsize=(14, 5))
-        ax[0].plot(covidCR_model_2['acc'])
-        ax[0].plot(covidCR_model_2['val_acc'])
-        ax[0].set_title('model accuracy')
-        ax[0].set_ylabel('accuracy')
-        ax[0].set_xlabel('epoch')
-        ax[0].legend(['train', 'test'], loc='upper left')
-        ax[1].plot(covidCR_model_2['loss'])
-        ax[1].plot(covidCR_model_2['val_loss'])
-        ax[1].set_title('model loss')
-        ax[1].set_ylabel('loss')
-        ax[1].set_xlabel('epoch')
-        ax[1].legend(['train', 'test'], loc='upper left')
-        output_image = r'./media/test_roc_ret.png'
-        plt.savefig(output_image)
-        return output_image
     @require_GET
     def cancel_job(request, task_id=None):
         result = AsyncResult(task_id)
@@ -231,43 +189,6 @@ class Home(TemplateView):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
 
-    def process_scan(filepath):
-        scan = pydicom.read_file(str(filepath))
-        scan = scan.pixel_array
-        scan = cv2.resize(scan, (224, 224))
-        return scan
-
-
-    def scanpath(Base_path):
-       scans = []
-       for root, dirs, files in os.walk(Base_path):
-           for fname in files:
-               scans.append(os.path.join(root, fname))
-       return scans
-    def pixelarray (normal_scan_path,abnormal_scan_path):
-        normal_scan_paths = Home.scanpath(normal_scan_path)
-        abnormal_scan_paths = Home.scanpath(abnormal_scan_path)
-        #
-        normal_scans = np.array([Home.process_scan(path) for path in normal_scan_paths])
-        abnormal_scans = np.array([Home.process_scan(path) for path in abnormal_scan_paths])
-        #
-        normal_labels = np.array([0 for _ in range(len(normal_scans))])
-        abnormal_labels = np.array([1 for _ in range(len(abnormal_scans))])
-        # Perform data split for training, validation, testing
-        X_train, X_test, y_train, y_test = train_test_split(np.concatenate((abnormal_scans, normal_scans)),
-                                                            np.concatenate((abnormal_labels, normal_labels)),
-                                                            test_size=0.2, shuffle=True, random_state=8)
-        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=8)
-        return X_train, y_train, X_test, y_test, X_val, y_val
-
-
-    @require_GET
-    def delete_job(request, task_id=None):
-        a = Tasks.objects.filter(task_id=task_id)
-        a.delete()
-        info = Home.track_jobs()
-        return render(request, 'monitor.html', context={'info': info})
-
 
     def process_scan(filepath):
         scan = pydicom.read_file(str(filepath))
@@ -305,93 +226,6 @@ class Home(TemplateView):
        soft = Dense(1, activation='sigmoid')(proj)
        model = Model(inputs=vgg_model.inputs, outputs=soft)
        return model
-
-
-    def model1(input_shape=(224,224,1)):
-        model = VGG19(include_top=True, weights=None, input_shape=input_shape)
-        x = model.layers[-1].output
-        # x=Dense(256)(x)
-        pred = Dense(1, activation='sigmoid')(x)
-        # soft = Dense(1, activation='sigmoid')(model.layers[-1].output)
-        model = Model(inputs=model.inputs, outputs=pred)
-        return model
-   # Training from scratch model
-
-    def model2(n_classes=2, input_shape=(224, 224, 1)):
-       vgg_model = VGG19(include_top=False, weights=None, input_shape=input_shape)
-       flat = Flatten()(vgg_model.layers[-1].output)
-       proj = Dense(1024, activation='relu')(flat)
-       soft = Dense(1, activation='sigmoid')(proj)
-       model = Model(inputs=vgg_model.inputs, outputs=soft)
-       return model
-
-
-    def model1(input_shape=(224,224,1)):
-        model = VGG19(include_top=True, weights=None, input_shape=input_shape)
-        x = model.layers[-1].output
-        # x=Dense(256)(x)
-        pred = Dense(1, activation='sigmoid')(x)
-        # soft = Dense(1, activation='sigmoid')(model.layers[-1].output)
-        model = Model(inputs=model.inputs, outputs=pred)
-        return model
-   # Training from scratch model
-
-
-    def conv2d_block(input_tensor, n_filters, kernel_size=3):
-        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(input_tensor)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(x)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-        x = Conv2D(filters=2 * n_filters, strides=(2, 2), kernel_size=kernel_size, kernel_initializer="he_normal",
-                   padding="same")(x)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-
-        return x
-
-
-    def model4(n_classes, input_shape):
-        '''
-           Classifier following encoder with random initialization (inspired by VGG structure)
-           input size must be fixed due to Flat+Dense
-
-           n_classes: number of ground truth classes
-           input_shape: shape of single input datum
-           '''
-        global Input
-        Input = Input(input_shape, K.learning_phase())
-        x = Home.conv2d_block(Input, 8)
-        x = Home.conv2d_block(Input, 16)
-        x = Home.conv2d_block(Input, 32)
-        x = Home.conv2d_block(Input, 64)
-        flat = Flatten()(x)
-        proj = Dense(1024, activation="relu")(flat)
-        soft = Dense(n_classes, activation="softmax")(proj)
-
-        model = Model(inputs=[Input], outputs=[soft])
-
-        return model
-
-    def model2(n_classes=2, input_shape=(224, 224, 1)):
-       vgg_model = VGG19(include_top=False, weights=None, input_shape=input_shape)
-       flat = Flatten()(vgg_model.layers[-1].output)
-       proj = Dense(1024, activation='relu')(flat)
-       soft = Dense(1, activation='sigmoid')(proj)
-       model = Model(inputs=vgg_model.inputs, outputs=soft)
-       return model
-
-
-    def model1(input_shape=(224,224,1)):
-        model = VGG19(include_top=True, weights=None, input_shape=input_shape)
-        x = model.layers[-1].output
-        # x=Dense(256)(x)
-        pred = Dense(1, activation='sigmoid')(x)
-        # soft = Dense(1, activation='sigmoid')(model.layers[-1].output)
-        model = Model(inputs=model.inputs, outputs=pred)
-        return model
-   # Training from scratch model
 
 
     def conv2d_block(input_tensor, n_filters, kernel_size=3):
@@ -439,25 +273,6 @@ class Home(TemplateView):
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
-            if model_input == "Transfer learning":
-                # load data paths, process scans to obtain pixel array and generate labels
-                print('You have chosen:', model_input,
-                      ",extracting the pixel array of dicom images to train the model...")
-                X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path, abnormal_scan_path)
-                CRcl_model = Home.model1()
-                CRcl_model.compile(
-                    loss="binary_crossentropy",
-                    optimizer=keras.optimizers.Adam(learning_rate=0.001),
-                    metrics=["acc"],
-                )
-                CRcl_model.fit(
-                    X_train,
-                    y_train,
-                    epochs=25,
-                    batch_size=10,
-                    validation_data=(X_val, y_val),
-                )
-
             if model_input == "Fine tuning":
                 # load data paths, process scans to obtain pixel array and generate labels
                 print('You have chosen:',model_input,",extracting the pixel array of dicom images to train the model...")
@@ -476,34 +291,6 @@ class Home(TemplateView):
                     validation_data=(X_val, y_val),
                 )
 
-           #  train_datagen = ImageDataGenerator(rescale=1./255,
-           #  shear_range=0.2,
-           #  zoom_range=0.2,
-           #  horizontal_flip=True,
-           #  validation_split=0.25)
-           #
-           #  train_generator = train_datagen.flow_from_directory(
-           #  data,
-           #  target_size=(Image_Height, Image_Width),
-           #  batch_size=batchsize,
-           #  class_mode='binary',
-           #  subset='training')
-           #
-           #  validation_generator = train_datagen.flow_from_directory(
-           #  data,
-           #  target_size=(Image_Height, Image_Width),
-           #  batch_size=batchsize,
-           #  class_mode='binary',
-           #  shuffle= False,
-           #  subset='validation')
-           # # untrain_model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
-           #  covid_model = untrain_model.fit(
-           #  train_generator,
-           #  steps_per_epoch = train_generator.samples // batchsize,
-           #  validation_data = validation_generator,
-           #  validation_steps = validation_generator.samples // batchsize,
-           #  epochs = Epochs)
-            
             context = ChestCR_model.history['accuracy']
             return render(request,'training.html',{"context": context,'epochs':Epochs})
         return render(request,"training.html")
