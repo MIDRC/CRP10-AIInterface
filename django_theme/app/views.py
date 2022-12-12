@@ -135,14 +135,14 @@ class Home(TemplateView):
             Epochs = int(request.POST.get('epochVal'))
             Augument = request.POST.getlist('augment')
             print("augumentation value is:  ", Augument)
-            Batch_Size = int(request.POST.get('batchsizeVal'))
-            learningrate = request.POST.get('learnrateVal')
+            Batchsize = int(request.POST.get('batchsizeVal'))
+            LearningRate = request.POST.get('learnrateVal')
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
             aug_value = request.POST.get('augVal')
             if model_input == "Fine tuning":
-                process_training.delay(Epochs,learningrate,Batch_Size,job_name = model_input)
+                process_training.delay(Epochs,LearningRate,Batchsize,job_name = model_input)
                 #context = ChestCR_model.history['accuracy']
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
 
