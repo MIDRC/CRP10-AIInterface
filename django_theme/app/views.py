@@ -1,4 +1,4 @@
-import PIL
+import PIL,shap, cv2, pydicom, pickle,re, io,os
 from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.core.files.storage import FileSystemStorage
@@ -10,30 +10,21 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-import shap
 from PIL import Image
 from keras.preprocessing import image
 from keras.models import load_model
 from keract import get_activations
 from keract import display_activations,display_heatmaps
 import numpy as np
-import cv2
-import pydicom
-import pickle
-import re
-import io
 import tensorflow as tf
-import os
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Activation, Flatten
 from tensorflow.keras.models import Model
 from tensorflow import keras
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
-
 
 from io import  StringIO
 from matplotlib import pylab
@@ -133,8 +124,8 @@ class Home(TemplateView):
        print("request is:", request)
        if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
-            Augument = request.POST.getlist('augment')
-            print("augumentation value is:  ", Augument)
+            #Augument = request.POST.getlist('augment')
+            #print("augumentation value is:  ", Augument)
             Batchsize = int(request.POST.get('batchsizeVal'))
             LearningRate = request.POST.get('learnrateVal')
             loss = request.POST.get('lossVal')
@@ -380,7 +371,7 @@ class Home(TemplateView):
 
 
     def heat_maps(request):
-        DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
+        DNN_layers = [layer.name for layer in ChestCR_model.layers]
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj = request.FILES['filePath']
@@ -388,11 +379,11 @@ class Home(TemplateView):
             filePathName = fs.save(fileObj.name, fileObj)
             filePathName = fs.url(filePathName)
             test_image = '.' + filePathName
-            #input_test = Home.process_scan(test_image)
-            #activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
-            input_test = Home.preprocess_image(img_path=test_image, model=covid_kaggle_model,
-                                               resize=(Image_Height, Image_Width))
-            activations = get_activations(covid_kaggle_model, input_test, layer)
+            input_test = Home.process_scan(test_image)
+            activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
+            #input_test = Home.preprocess_image(img_path=test_image, model=covid_kaggle_model,
+                                               #resize=(Image_Height, Image_Width))
+            #activations = get_activations(covid_kaggle_model, input_test, layer)
             heatMapImgPath = display_heatmaps(activations, input_test, directory=r'./media/', save=True)
             print( heatMapImgPath)
             return render(request, 'heat_maps.html',
@@ -401,7 +392,7 @@ class Home(TemplateView):
         return render(request, 'heat_maps.html', {"DNN_layers": DNN_layers})
     
     def activation_maps(request):
-        DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
+        DNN_layers = [layer.name for layer in ChestCR_model.layers]
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj=request.FILES['filePath']
@@ -409,10 +400,10 @@ class Home(TemplateView):
             filePathName=fs.save(fileObj.name,fileObj)
             filePathName=fs.url(filePathName)
             test_image = '.'+filePathName
-            #input_test = Home.process_scan(test_image)
-            #activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
-            input_test = Home.preprocess_image(img_path=test_image,model=covid_kaggle_model,resize=(Image_Height, Image_Width))
-            activations = get_activations(covid_kaggle_model, input_test,layer)
+            input_test = Home.process_scan(test_image)
+            activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
+            #input_test = Home.preprocess_image(img_path=test_image,model=covid_kaggle_model,resize=(Image_Height, Image_Width))
+            #activations = get_activations(covid_kaggle_model, input_test,layer)
             activationMapImgPath = display_activations(activations, directory=r'./media/', save=True)
             print(activationMapImgPath)
             return render(request,'activation_maps.html',
