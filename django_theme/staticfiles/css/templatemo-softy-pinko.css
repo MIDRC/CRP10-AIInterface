@@ -660,7 +660,7 @@ welcome
 }
 
 .welcome-area .header-text h1 {
-  font-weight: 500;
+  font-weight: 650;
   font-size: xx-large;
   line-height: 54px;
   letter-spacing: 1.4px;
@@ -752,7 +752,7 @@ features
 */
 .features-small-item {
   cursor: pointer;
-  display: block;
+  display: flow-root;
   background: #FFFFFF;
   box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.10);
   -webkit-border-radius: 20px;
@@ -816,6 +816,10 @@ features
 
 .features-small-item a {
   float: right;
+  color:black;
+  font-weight:400;
+  text-align:center;
+  font-size: 18px;
   position: relative;
   z-index: 2;
 }
@@ -1166,6 +1170,7 @@ team
   display: block;
   font-weight: 400;
   font-size: 17px;
+  text-align:center;
   color: #1e1e1e;
   letter-spacing: 0.25px;
   margin-bottom: 5px;

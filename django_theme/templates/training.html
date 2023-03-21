@@ -41,8 +41,8 @@
                      {% csrf_token %}
                       <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
-                           <select name="vggVal">
-                              <option disabled="disabled" selected="selected">VGGNet</option>
+                           <select name="vggVal" required>
+                              <option value="">VGGNet</option>
                               <option>Transfer learning</option>
                               <option>Fine tuning</option>
                                <option>Feature extraction</option>
@@ -54,8 +54,8 @@
 
                       <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
-                           <select name="augVal" onchange="displayOptions('checkbox-test', this)">
-                              <option disabled="disabled" selected="selected">Data Augmentation</option>
+                           <select name="augVal" onchange="displayOptions('checkbox-test', this)" required>
+                              <option value="">Data Augmentation</option>
                               <option>Yes</option>
                               <option>No</option>
                            </select>
@@ -76,12 +76,12 @@
                      </div>
 
                      <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Epochs"  name="epochVal">
+                        <input class="form-control" type="text" placeholder="Epochs"  name="epochVal" required>
                      </div>
                      <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
-                           <select name="optimizerVal">
-                              <option disabled="disabled" selected="selected">Optimizer</option>
+                           <select name="optimizerVal" required>
+                              <option value="">Optimizer</option>
                               <option>Adam</option>
                               <option>RMSProp</option>
                               <option>SGD</option>
@@ -95,8 +95,8 @@
                      </div>
                      <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
-                           <select name="lossVal">
-                              <option disabled="disabled" selected="selected">Loss</option>
+                           <select name="lossVal" required>
+                              <option value="">Loss</option>
                               <option>BCE loss</option>
                               <option>CCE loss</option>
                                <option>hinge loss</option>
@@ -108,10 +108,10 @@
                         </div>
                      </div>
                      <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Batchsize"  name="batchsizeVal">
+                        <input class="form-control" type="text" placeholder="Batchsize"  name="batchsizeVal" required>
                      </div>
                      <div class="input-group">
-                        <input class="form-control" type="text" placeholder="LearningRate" name="learnrateVal">
+                        <input class="form-control" type="text" placeholder="LearningRate" name="learnrateVal" required>
                      </div>
                      <div class="p-t-10">
                          <a href="{% url 'monitor_training' %}">

@@ -24,8 +24,10 @@ urlpatterns = [
     url('training',Home.run_training,name ='training'),
     url('monitor',Home.monitor_training,name ='monitor_training'),
     url('plot_acc',Home.plot_acc,name ='plot_acc'),
+    url('shapley_values',Home.shapley_values,name ='shapley_values'),
     url('testing',Home.testing, name='testing'),
     url('heat_maps',Home.heat_maps, name='heat_maps'),
+    url('jupyter_notebook',Home.jupyter_notebook,name='jupyter_notebook'),
     url('activation_maps',Home.activation_maps, name='activation_maps'),
 
     url(r'run', Home.run, name='run'),

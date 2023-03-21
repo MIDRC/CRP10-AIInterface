@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Shapley Value</title>
-    <h3><a href="/">Heat Maps for each DNN Layer</a></h3>
+    <h3><a href="/">Shap plots</a></h3>
      <link rel="stylesheet" href="{% static 'css/database.css' %}">
     <script type="text/javascript" src="staticfiles/js/progress_bar.js"></script>
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -22,17 +22,19 @@
 <body>
 <form method="POST" enctype="multipart/form-data" action=" ">
  {% csrf_token %}
-<div class ="col-md-4 col sm-4">
-    <label form="formFileabled" class="form-label">Upload your project files here:</label>
-     <input name ="filePath" class="form-control" type="file" id="formFileabled" abled />
- </div>
-
+<div class="input-group">
+    <h2>choose the number of training samples:</h2>
+    <input class="form-control" type="text" placeholder="train_samples"  name="trainsamplesVal">
+</div>
+    <div class="input-group">
+    <h2>choose on how many number of images you wanted to see the model prediction:</h2>
+    <input class="form-control" type="text" placeholder="train_samples"  name="trainsamplesVal">
+</div>
  <input type="submit" value="Submit"></div>
- <img src={{filePathName}} class="img-fluid" alt='imagename' style="width: 400px;">
- {{filePathName}}
- <h2>Shap Image is:</h2>
- <img src={{heatMapImgPath}} class="img-fluid" alt='heatmapimage' style="width: 400px;">
- {{heatMapImgPath}}
+ <h2>Shap plot is:</h2>
+    <a href="{% url 'shapley_values' %}">
+ <img src={{shapPath}} class="img-fluid" alt='shapplot' style="width: 400px;">
+ {{shapPath}}
  </form>
 </body>
 <br>

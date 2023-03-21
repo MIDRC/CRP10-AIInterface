@@ -1,17 +1,14 @@
 import PIL,shap, cv2, pydicom, pickle,re, io,os
-from django.http import JsonResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponse
+import subprocess
+import time
 from django.core.files.storage import FileSystemStorage
-from django.utils.baseconv import base64
 from keras.preprocessing.image import ImageDataGenerator,load_img, img_to_array
 from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from PIL import Image
-from keras.preprocessing import image
 from keras.models import load_model
 from keract import get_activations
 from keract import display_activations,display_heatmaps
@@ -23,11 +20,7 @@ from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Activation, Flatten
 from tensorflow.keras.models import Model
 from tensorflow import keras
-from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
-
-from io import  StringIO
-from matplotlib import pylab
 from pylab import *
 
 from app.tasks import process, process_training
@@ -42,6 +35,7 @@ from django.views.decorators.http import require_http_methods
 
 MODEL=load_model('.\\models\\covidnet.hdf5')
 ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covidCRnet.hdf5')
+covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\finetuning_imagenet_hpt', "rb"))
 covid_kaggle_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covid_kagglenet.hdf5')
 untrain_model = load_model('.\\models\\untrained_model.hdf5')
 data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
@@ -127,7 +121,7 @@ class Home(TemplateView):
             #Augument = request.POST.getlist('augment')
             #print("augumentation value is:  ", Augument)
             Batchsize = int(request.POST.get('batchsizeVal'))
-            LearningRate = request.POST.get('learnrateVal')
+            LearningRate = float(request.POST.get('learnrateVal'))
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
@@ -180,6 +174,27 @@ class Home(TemplateView):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
 
+
+    def jupyter_notebook(request):
+       if request.method == 'POST':
+            b = subprocess.check_output("jupyter-lab list".split()).decode('utf-8')
+            if "9999" not in b:
+                a = subprocess.Popen("jupyter-lab  --no-browser --port 9999".split())
+            start_time = time.time()
+            unreachable_time = 10
+            while "9999" not in b:
+                timer = time.time()
+                elapsed_time = timer - start_time
+                b = subprocess.check_output("jupyter-lab list".split()).decode('utf-8')
+                if "9999" in b:
+                    break
+                if elapsed_time > unreachable_time:
+                    return HttpResponse("Unreachable")
+            path = b.split('\n')[1].split('::', 1)[0]
+            print(path)
+            return render(request, path)
+        # You can here add data to your path if you want to open file or anything
+       return render(request, "jupyter_notebook.html")
 
     def process_scan(filepath):
         scan = pydicom.read_file(str(filepath))
@@ -260,7 +275,7 @@ class Home(TemplateView):
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
             batchsize = int(request.POST.get('batchsizeVal'))
-            learningrate = request.POST.get('learnrateVal')
+            learningrate = float(request.POST.get('learnrateVal'))
             loss = request.POST.get('lossVal')
             optimizer = request.POST.get('optimizerVal')
             model_input = request.POST.get('vggVal')
@@ -385,7 +400,7 @@ class Home(TemplateView):
                                                #resize=(Image_Height, Image_Width))
             #activations = get_activations(covid_kaggle_model, input_test, layer)
             heatMapImgPath = display_heatmaps(activations, input_test, directory=r'./media/', save=True)
-            print( heatMapImgPath)
+            #print( heatMapImgPath)
             return render(request, 'heat_maps.html',
                       {"layer_name": layer, "DNN_layers": DNN_layers, 'filePathName': filePathName,
                        'HeatMapImgPath':  heatMapImgPath})
@@ -413,6 +428,16 @@ class Home(TemplateView):
 
     def shapley_values(request):
         if request.method == 'POST':
-            print(request)
+            X_train = np.load(r'C:\Users\4472829\PycharmProjects\Pre_run_numpyarrays\xtrain.npy')
+            X_test = np.load(r'C:\Users\4472829\PycharmProjects\Pre_run_numpyarrays\xtest.npy')
+            background = X_train[np.random.choice(X_train.shape[0], 10, replace=False)]
+            e = shap.DeepExplainer(ChestCR_model, np.expand_dims(background, axis=-1))
+            X_test_expand = np.expand_dims(X_test, axis=-1)
+            shap_values = e.shap_values(X_test_expand[5:7])
+            fig= shap.image_plot(shap_values, X_test[5:7])
+            canvas = FigureCanvasTkAgg(fig)
+            response = HttpResponse(content_type='image/png')
+            canvas.print_png(response)
+            return render(response,'shapley_value.html')
         return render(request, 'shapley_value.html')
 

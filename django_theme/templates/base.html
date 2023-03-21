@@ -72,8 +72,7 @@ https://templatemo.com/tm-535-softy-pinko
             <div class="container">
                 <div class="row">
                     <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-                        <h1>CRP10 AI Interface<br>for Covid</h1>
-                        <p>CRP10's AI interface is designed to help researchers, developers and doctors with easy development and testing of AI models for Covid applications</p>
+                        <h1>MIDRC AI Interface<br>for Covid</h1>
                         <a href="#features" class="main-button-slider">Discover More</a>
                     </div>
                 </div>
@@ -93,10 +92,12 @@ https://templatemo.com/tm-535-softy-pinko
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.2s">
                             <div class="features-small-item">
                                 <div class="icon">
-                                    <i><img src="images/featured-item-01.png" alt=""></i>
+                                    <i> <img src="{% static 'images/featured-item-01.png' %}" alt=""></i>
                                 </div>
-                                <h5 class="features-title">Department Metrics</h5>
-                                <p>View the publications from CRP10</p>
+                                <h5 class="features-title"><a href="https://www.midrc.org/midrc-publications">Department metrics and publications</a></h5>
+                               <!-- <h5 class="features-title">Department Metrics</h5>
+                                <a href="https://www.midrc.org/midrc-publications">View the publications from MIDRC team</a> -->
+                                <!--<p>View the publications from MIDRC</p> -->
                             </div>
                         </div>
                         <!-- ***** Features Small Item End ***** -->
@@ -105,10 +106,10 @@ https://templatemo.com/tm-535-softy-pinko
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.4s">
                             <div class="features-small-item">
                                 <div class="icon">
-                                    <i><img src="images/featured-item-01.png" alt=""></i>
+                                    <i> <img src="{% static 'images/featured-item-01.png' %}" alt=""></i>
                                 </div>
-                                <h5 class="features-title">Best Relationship</h5>
-                                <p>Contact us immediately if you have a question in mind</p>
+                                <h5 class="features-title">Contact us if you have a question in mind</h5>
+                                <!--<p>Contact us immediately if you have a question in mind</p> -->
                             </div>
                         </div>
                         <!-- ***** Features Small Item End ***** -->
@@ -117,11 +118,10 @@ https://templatemo.com/tm-535-softy-pinko
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.6s">
                             <div class="features-small-item">
                                 <div class="icon">
-                                    <i><img src="images/featured-item-01.png" alt=""></i>
+                                    <i> <img src="{% static 'images/featured-item-01.png' %}" alt=""></i>
                                 </div>
-                                <h5 class="features-title">Research Focus</h5>
-                                <p>MIDRC is a multi-institutional collaborative initiative driven by the medical imaging community and is aimed at accelerating
-                                    the transfer of knowledge and innovation in the current COVID-19 pandemic and beyond</p>
+                                <h5 class="features-title">Research Focus: MIDRC is a multi-institutional collaborative initiative aimed at accelerating
+                                    the transfer of knowledge and innovation </h5>
                             </div>
                         </div>
                         <!-- ***** Features Small Item End ***** -->
@@ -137,16 +137,19 @@ https://templatemo.com/tm-535-softy-pinko
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-md-12 col-sm-12 align-self-center" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
-                    <img src="{% static 'images/ML_API.png' %}" class="rounded img-fluid d-block mx-auto" alt="App">
+                    <img src="{% static 'images/MAIIC_dashboard.png' %}" class="rounded img-fluid d-block mx-auto" alt="App">
                 </div>
                 <div class="col-lg-1"></div>
                 <div class="col-lg-6 col-md-12 col-sm-12 align-self-center mobile-top-fix">
                     <div class="left-heading">
-                       <a href="{% url 'login_base' %}" class="main-button-slider"> CRP10AII</a>
+                       <a href="{% url 'login_base' %}" class="main-button-slider">MAIIC</a>
                     </div>
                     <div class="left-text">
-                        <p> The main idea behind CRP10AI interface for Covid is to help researchers, developers and doctors with easy development and
-                            testing of AI models for Covid applications.</p>
+                        <p> This interface is designed as part of MIDRC consortium to help clinicians, researchers, and early AI developers with a modular,
+                            flexible, and user-friendly software tool that can effectively meet their needs to explore, train, and test AI algorithms
+                            as well as interpret their model results. The major highlight of MAIIC is its capability of visualization and interpretability
+                            of otherwise Blackbox AI algorithms. The significance of this API is unexperienced users may have more time to swiftly pre-process,
+                            build/train their AI models on their own use-cases, and further visualize and explore these AI models as part of this pipeline, all in an end-to-end manner.</p>
                     </div>
                 </div>
             </div>
@@ -197,7 +200,7 @@ https://templatemo.com/tm-535-softy-pinko
                 <div class="row">
                     <div class="col-lg-2 col-md-3 col-sm-6 col-6">
                         <a href="#" class="mini-box">
-                            <i><img src="images/work-process-item-01.png" alt=""></i>
+                            <i> <img src="{% static 'images/work-process-item-01.png' %}" alt=""></i>
                             <strong>Get Ideas</strong>
                             <span>Godard pabst prism fam cliche.</span>
                         </a>
@@ -268,12 +271,9 @@ https://templatemo.com/tm-535-softy-pinko
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="team-item">
                         <div class="team-content">
-                            <i><img src="images/testimonial-icon.png" alt=""></i>
+                            <i> <img src="{% static 'images/MaryellenL_Giger.png' %}" alt=""></i>
                             <p>Maryellen L. Giger, PhD, is the principal investigator of the NIBIB MIDRC contract and A.N. Pritzker Professor of Radiology,
                                 Committee on Medical Physics, and the College at the University of Chicago</p>
-                            <div class="user-image">
-                                <img src="http://placehold.it/60x60" alt="">
-                            </div>
                             <div class="team-info">
                                 <h3 class="user-name">Maryellen Giger</h3>
                                 <span>Principal Investigator</span>
@@ -287,15 +287,12 @@ https://templatemo.com/tm-535-softy-pinko
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="team-item">
                         <div class="team-content">
-                            <i><img src="images/testimonial-icon.png" alt=""></i>
+                            <i> <img src="{% static 'images/Issam-El-Naqa_square-300x300.jpg' %}" alt=""></i>
                             <p>Issam El Naqa is a Chair and Senior member at Moffitt machine learning. His lab's research interests are in the areas of oncology bioinformatics,
                                 artificial intelligence, multimodality image analysis, and treatment outcome modeling</p>
-                            <div class="user-image">
-                                <img src="http://placehold.it/60x60" alt="">
-                            </div>
                             <div class="team-info">
                                 <h3 class="user-name">Issam El Naqa</h3>
-                                <span>Co PI</span>
+                                <span>Co-PI</span>
                             </div>
                         </div>
                     </div>
