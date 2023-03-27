@@ -29,6 +29,7 @@ urlpatterns = [
     url('heat_maps',Home.heat_maps, name='heat_maps'),
     url('jupyter_notebook',Home.jupyter_notebook,name='jupyter_notebook'),
     url('activation_maps',Home.activation_maps, name='activation_maps'),
+ url('interactive_dropdowns',Home.interactive_dropdowns, name='interactive_dropdowns'),
 
     url(r'run', Home.run, name='run'),
     url(r'^monitor/$', Home.monitor, name='monitor'),

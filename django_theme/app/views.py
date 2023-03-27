@@ -433,11 +433,17 @@ class Home(TemplateView):
             background = X_train[np.random.choice(X_train.shape[0], 10, replace=False)]
             e = shap.DeepExplainer(ChestCR_model, np.expand_dims(background, axis=-1))
             X_test_expand = np.expand_dims(X_test, axis=-1)
-            shap_values = e.shap_values(X_test_expand[5:7])
-            fig= shap.image_plot(shap_values, X_test[5:7])
-            canvas = FigureCanvasTkAgg(fig)
-            response = HttpResponse(content_type='image/png')
-            canvas.print_png(response)
-            return render(response,'shapley_value.html')
+            X_test_float = X_test_expand.astype(float)
+            shap_values = e.shap_values(X_test_float[5:7])
+            X_testplot_float = X_test.astype(float)
+            shap.image_plot(shap_values, X_testplot_float[5:7], show=False)
+            plt.savefig('./media/shap.png')
+            plt.close()
+            image_path = r'./media/shap.png'
+            return render (request, 'shapley_value.html', {'shapPath':image_path})
         return render(request, 'shapley_value.html')
 
+    def interactive_dropdowns(request):
+        if request.method=='POST':
+            print(render,'interactive_dropdowns.html')
+        return render(request, 'interactive_dropdowns.html')

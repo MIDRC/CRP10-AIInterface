@@ -33,12 +33,15 @@
                </div>
                <div class="card-body">
                   <h2 class="title">DNN Model Training</h2>
-                  <div class="infoIcon">
+                 <!-- <div class="infoIcon">
           <a href="#" class="a"><img src="https://cdn.onlinewebfonts.com/svg/img_151567.png" alt="info icon" /></a>
           <span class="extraInfo">Extra Info</span>
-        </div>
+        </div>-->
+
                   <form method="POST">
                      {% csrf_token %}
+                      <div class="icon">i</div>
+    <div class="info">Your information.</div>
                       <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
                            <select name="vggVal" required>
@@ -62,7 +65,7 @@
                            <div class="select-dropdown"></div>
                         </div>
                      </div>
-                     <div class="checkbox-test">
+                     <div class="checkbox-test" style="display: none">
                            <input type="checkbox" id="Rotate" name="augment" value="Rotate">
                            <label for="Rotate">Rotate</label>
                            <input type="checkbox" id="Zoom" name="augment" value="Zoom">
@@ -144,6 +147,22 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
       <!-- Main JS-->
       <script type="javascript" href="{% static 'js/global.js' %}"></script>
+
+   <style>
+       .icon{
+            color: white;
+           display: block;
+           float: right;
+           width:6%;
+        }
+        .info{
+            display: none;
+        }
+        .icon:hover ~ .info{
+            display: block;
+        }
+    </style>
+
    </body>
    <!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
