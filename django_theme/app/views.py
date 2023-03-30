@@ -129,7 +129,7 @@ class Home(TemplateView):
             if model_input == "Fine tuning":
                 process_training.delay(Epochs,LearningRate,Batchsize,job_name = model_input)
                 #context = ChestCR_model.history['accuracy']
-                return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
+                return render(request, 'monitor.html', context={'message': f'You have chosen {model_input}'})
 
             elif model_input == "Training from scratch":
                 process_training.delay(job_name=model_input)
@@ -208,6 +208,7 @@ class Home(TemplateView):
            for fname in files:
                scans.append(os.path.join(root, fname))
        return scans
+
     def pixelarray (normal_scan_path,abnormal_scan_path):
         normal_scan_paths = Home.scanpath(normal_scan_path)
         abnormal_scan_paths = Home.scanpath(abnormal_scan_path)
@@ -407,24 +408,42 @@ class Home(TemplateView):
         return render(request, 'heat_maps.html', {"DNN_layers": DNN_layers})
     
     def activation_maps(request):
-        DNN_layers = [layer.name for layer in ChestCR_model.layers]
+        ChestCR_model_DNN_layers = [layer.name for layer in ChestCR_model.layers]
+        covid_kaggle_model_DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
+        DNN_layers = ChestCR_model_DNN_layers + covid_kaggle_model_DNN_layers
+        #print("DNN layers:" + DNN_layers)
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj=request.FILES['filePath']
-            fs=FileSystemStorage()
-            filePathName=fs.save(fileObj.name,fileObj)
-            filePathName=fs.url(filePathName)
-            test_image = '.'+filePathName
+            # model = request.POST.get('models')
+            #print("Model chosen is:" + request.POST.get('models'))
+            #print("Layer chosen is:" + layer)
+            fs = FileSystemStorage()
+            filePathName = fs.save(fileObj.name, fileObj)
+            filePathName = fs.url(filePathName)
+            test_image = '.' + filePathName
             input_test = Home.process_scan(test_image)
-            activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
-            #input_test = Home.preprocess_image(img_path=test_image,model=covid_kaggle_model,resize=(Image_Height, Image_Width))
-            #activations = get_activations(covid_kaggle_model, input_test,layer)
-            activationMapImgPath = display_activations(activations, directory=r'./media/', save=True)
-            print(activationMapImgPath)
-            return render(request,'activation_maps.html',
-                          {"layer_name": layer,"DNN_layers": DNN_layers,'filePathName':filePathName,
-                                                          'ActivationMapImgPath':activationMapImgPath})
-        return render(request,'activation_maps.html',{"DNN_layers": DNN_layers})
+
+            # If Model1 == covid_kaggle_model then run and generate the activation map
+            if request.POST.get('models') == "ChestCR_model":
+                activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
+                activationMapImgPath = display_activations(activations, directory=r'./media/', save=True)
+                print(activationMapImgPath)
+                return render(request,'activation_maps.html',
+                              {"layer_name": layer, "DNN_layers": ChestCR_model_DNN_layers, 'filePathName':filePathName,
+                                                              'ActivationMapImgPath': activationMapImgPath})
+            else:
+                activations = get_activations(covid_kaggle_model, np.expand_dims(input_test, axis=0), layer)
+                activationMapImgPath = display_activations(activations, directory=r'./media/', save=True)
+                print(activationMapImgPath)
+                return render(request, 'activation_maps.html',
+                              {"layer_name": layer, "DNN_layers": covid_kaggle_model_DNN_layers,
+                               'filePathName': filePathName,
+                               'ActivationMapImgPath': activationMapImgPath})
+
+        #return render(request,'activation_maps.html',{"ChestCR_model": ChestCR_model_DNN_layers, "covid_kaggle_model": covid_kaggle_model_DNN_layers})
+
+        return render(request, 'activation_maps.html', {"DNN_layers": DNN_layers})
 
     def shapley_values(request):
         if request.method == 'POST':
