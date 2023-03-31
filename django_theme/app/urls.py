@@ -29,10 +29,10 @@ urlpatterns = [
     url('heat_maps',Home.heat_maps, name='heat_maps'),
     url('jupyter_notebook',Home.jupyter_notebook,name='jupyter_notebook'),
     url('activation_maps',Home.activation_maps, name='activation_maps'),
- url('interactive_dropdowns',Home.interactive_dropdowns, name='interactive_dropdowns'),
+    url('interactive_dropdowns',Home.interactive_dropdowns, name='interactive_dropdowns'),
 
     url(r'run', Home.run, name='run'),
-    url(r'^monitor/$', Home.monitor, name='monitor'),
+    #url(r'^monitor/$', Home.monitor, name='monitor'),
     url(r'^delete_job/(?P<task_id>.+)/$', Home.delete_job,
        name='delete_job'),
     url(r'^cancel_job/(?P<task_id>.+)/$', Home.cancel_job,

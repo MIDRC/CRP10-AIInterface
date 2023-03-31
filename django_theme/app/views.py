@@ -1,6 +1,14 @@
+# Original Author: Naveena Gorre
+# Email address: naveena.gorre@moffitt.org
+# views.py is the main backend code populated with all the python functions needed to run the frontend templates.
+
+# All the necessary imports/python packages needed to run the DL models, pre-processing steps as well as visulization
+# and interpretability
+
 import PIL,shap, cv2, pydicom, pickle,re, io,os
 from django.shortcuts import render,redirect,HttpResponse
 import subprocess
+from json import dumps
 import time
 from django.core.files.storage import FileSystemStorage
 from keras.preprocessing.image import ImageDataGenerator,load_img, img_to_array
@@ -39,8 +47,6 @@ covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_no
 covid_kaggle_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covid_kagglenet.hdf5')
 untrain_model = load_model('.\\models\\untrained_model.hdf5')
 data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
-normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"
-abnormal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive"
 
 
 Image_Height, Image_Width = 150,150 
@@ -128,8 +134,8 @@ class Home(TemplateView):
             aug_value = request.POST.get('augVal')
             if model_input == "Fine tuning":
                 process_training.delay(Epochs,LearningRate,Batchsize,job_name = model_input)
-                #context = ChestCR_model.history['accuracy']
-                return render(request, 'monitor.html', context={'message': f'You have chosen {model_input}'})
+                #info = Home.track_jobs()
+                return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
 
             elif model_input == "Training from scratch":
                 process_training.delay(job_name=model_input)
@@ -155,10 +161,10 @@ class Home(TemplateView):
                                     progress, item.task_id])
         return information
 
-    @require_GET
-    def monitor(request):
-        info = Home.track_jobs()
-        return render(request, 'monitor.html', context={'info': info})
+    #@require_GET
+    #def monitor(request):
+     #   info = Home.track_jobs()
+      #  return render(request, 'monitor.html', context={'info': info})
 
     @require_GET
     def cancel_job(request, task_id=None):
@@ -411,13 +417,14 @@ class Home(TemplateView):
         ChestCR_model_DNN_layers = [layer.name for layer in ChestCR_model.layers]
         covid_kaggle_model_DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
         DNN_layers = ChestCR_model_DNN_layers + covid_kaggle_model_DNN_layers
-        #print("DNN layers:" + DNN_layers)
+        dnnLayers = {
+            'ChestCR_model': ChestCR_model_DNN_layers,
+            'covid_kaggle_model': covid_kaggle_model_DNN_layers,
+            'DNN_layers': DNN_layers
+        }
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj=request.FILES['filePath']
-            # model = request.POST.get('models')
-            #print("Model chosen is:" + request.POST.get('models'))
-            #print("Layer chosen is:" + layer)
             fs = FileSystemStorage()
             filePathName = fs.save(fileObj.name, fileObj)
             filePathName = fs.url(filePathName)
@@ -441,9 +448,8 @@ class Home(TemplateView):
                                'filePathName': filePathName,
                                'ActivationMapImgPath': activationMapImgPath})
 
-        #return render(request,'activation_maps.html',{"ChestCR_model": ChestCR_model_DNN_layers, "covid_kaggle_model": covid_kaggle_model_DNN_layers})
-
-        return render(request, 'activation_maps.html', {"DNN_layers": DNN_layers})
+        dataJSON = dumps(dnnLayers)
+        return render(request, 'activation_maps.html', {"DNN_layers": dataJSON})
 
     def shapley_values(request):
         if request.method == 'POST':

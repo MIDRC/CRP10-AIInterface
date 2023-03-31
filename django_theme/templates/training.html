@@ -41,7 +41,7 @@
                   <form method="POST">
                      {% csrf_token %}
                       <div class="icon">i</div>
-    <div class="info">Your information.</div>
+                      <div class="info">Your information.</div>
                       <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
                            <select name="vggVal" required>
@@ -117,7 +117,7 @@
                         <input class="form-control" type="text" placeholder="LearningRate" name="learnrateVal" required>
                      </div>
                      <div class="p-t-10">
-                         <a href="{% url 'monitor_training' %}">
+                        <a href="{% url 'monitor_training' %}">
                              <button class="button" type="submit" name="train" value="Train">Train</button></a>
                      </div>
                 </form>

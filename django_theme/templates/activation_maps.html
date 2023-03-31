@@ -29,7 +29,7 @@
 
                 <div class="row justify-content-center", id = "3">
 					<div class="col-lg-5 d-flex justify-content-center align-items-center">
-                        <select class="js-select2" multiple="multiple" name="models" action="/">
+                        <select class="js-select2" multiple="multiple" onchange="dnLayers()" id="models" action="/">
                             <option value="ChestCR_model">ChestCR_model</option>
                             <option value="covid_kaggle_model">covid_kaggle_model</option>
                         </select>
@@ -38,8 +38,7 @@
 
                 <div class="row justify-content-center", id = "2">
 					<div class="col-lg-5 d-flex justify-content-center align-items-center">
-						<select class="js-select2" multiple="multiple"  name="layers" action="/"> {% for layer in DNN_layers %}
-							<option value="{{layer}}">{{layer}} </option> {% endfor %}
+						<select class="js-select2" multiple="multiple"  id="layers" action="/">
                         </select>
 					</div>
 				</div>
@@ -54,8 +53,37 @@
 		</section>
 
 
-        <script>
-            console.log("DNN_layer is :", "{{ ChestCR_model }}");
+        <script defer>
+            function dnLayers() {
+                let mdls = document.getElementById("models");
+                let modelName = mdls.options[mdls.selectedIndex].value;
+                //debugger;
+                let layers = JSON.parse("{{ DNN_layers|escapejs }}");
+                if(modelName === "ChestCR_model"){
+                    let ChestCR_layers = layers['ChestCR_model'];
+                    console.log("length of chest layers:",ChestCR_layers.length);
+                    for(let i = 0; i < ChestCR_layers.length; i++){
+						var option_value = ChestCR_layers[i];
+						var el = document.createElement("option");
+						el.textContent = option_value;
+						el.value = option_value;
+						console.log("layer name:", option_value);
+						document.getElementById('layers').appendChild(el);
+                    }
+                } else if(modelName === "covid_kaggle_model"){
+                    let covid_kaggle_layers = layers['covid_kaggle_model'];
+                    console.log("length of covid layers:",covid_kaggle_layers.length);
+					for(let i = 0; i < covid_kaggle_layers.length; i++){
+						var option_value = covid_kaggle_layers[i];
+						var el = document.createElement("option");
+						el.textContent = option_value;
+						el.value = option_value;
+						console.log("layer name:", option_value);
+						document.getElementById('layers').appendChild(el);
+                    }
+                }
+            }
+
         </script>
 		<script src="{% static 'js/jquery.min_HM.js' %}"></script>
 		<script src="{% static 'js/popper_HM.js' %}"></script>
