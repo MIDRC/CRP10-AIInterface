@@ -29,7 +29,8 @@
 
                 <div class="row justify-content-center", id = "3">
 					<div class="col-lg-5 d-flex justify-content-center align-items-center">
-                        <select class="js-select2" multiple="multiple" onchange="dnLayers()" id="models" action="/">
+                        <select class="js-select2" onchange="dnLayers()" name = "models" id="models" action="/">
+                            <option disabled selected value> select an option</option>
                             <option value="ChestCR_model">ChestCR_model</option>
                             <option value="covid_kaggle_model">covid_kaggle_model</option>
                         </select>
@@ -38,7 +39,7 @@
 
                 <div class="row justify-content-center", id = "2">
 					<div class="col-lg-5 d-flex justify-content-center align-items-center">
-						<select class="js-select2" multiple="multiple"  id="layers" action="/">
+						<select class="js-select2" multiple="multiple" name ="layers" id="layers" action="/">
                         </select>
 					</div>
 				</div>
@@ -53,34 +54,40 @@
 		</section>
 
 
-        <script defer>
+        <script>
+            function createOptions(inputLayers) {
+                for(let i = 0; i < inputLayers.length; i++){
+                    var option_value = inputLayers[i];
+                    var el = document.createElement("option");
+                    el.textContent = option_value;
+                    el.value = option_value;
+                    document.getElementById('layers').appendChild(el);
+                }
+            }
+            function removeOptions() {
+              // This if condition removes the existing options from the layers dropdown
+                if(document.getElementById('layers').length){
+                    let select = document.getElementById('layers');
+                    let select_length = select.options.length;
+                    for(let i = select_length - 1; i >= 0; i--){
+                        select.remove(i);
+                    }
+                }
+            }
             function dnLayers() {
                 let mdls = document.getElementById("models");
                 let modelName = mdls.options[mdls.selectedIndex].value;
-                //debugger;
                 let layers = JSON.parse("{{ DNN_layers|escapejs }}");
                 if(modelName === "ChestCR_model"){
                     let ChestCR_layers = layers['ChestCR_model'];
-                    console.log("length of chest layers:",ChestCR_layers.length);
-                    for(let i = 0; i < ChestCR_layers.length; i++){
-						var option_value = ChestCR_layers[i];
-						var el = document.createElement("option");
-						el.textContent = option_value;
-						el.value = option_value;
-						console.log("layer name:", option_value);
-						document.getElementById('layers').appendChild(el);
-                    }
+                    removeOptions();
+					// This loop will create and add the options to layers dropdown
+                    createOptions(ChestCR_layers);
                 } else if(modelName === "covid_kaggle_model"){
                     let covid_kaggle_layers = layers['covid_kaggle_model'];
-                    console.log("length of covid layers:",covid_kaggle_layers.length);
-					for(let i = 0; i < covid_kaggle_layers.length; i++){
-						var option_value = covid_kaggle_layers[i];
-						var el = document.createElement("option");
-						el.textContent = option_value;
-						el.value = option_value;
-						console.log("layer name:", option_value);
-						document.getElementById('layers').appendChild(el);
-                    }
+                    removeOptions();
+					// This loop will create and add the options to layers dropdown
+					createOptions(covid_kaggle_layers);
                 }
             }
 

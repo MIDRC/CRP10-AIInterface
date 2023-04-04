@@ -9,7 +9,6 @@ import PIL,shap, cv2, pydicom, pickle,re, io,os
 from django.shortcuts import render,redirect,HttpResponse
 import subprocess
 from json import dumps
-import time
 from django.core.files.storage import FileSystemStorage
 from keras.preprocessing.image import ImageDataGenerator,load_img, img_to_array
 from django.views.generic import TemplateView
@@ -20,9 +19,6 @@ from django.contrib.auth.decorators import login_required
 from keras.models import load_model
 from keract import get_activations
 from keract import display_activations,display_heatmaps
-import numpy as np
-import tensorflow as tf
-
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.layers import Input, Dense,Conv2D, BatchNormalization, Activation, Flatten
@@ -30,7 +26,6 @@ from tensorflow.keras.models import Model
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
 from pylab import *
-
 from app.tasks import process, process_training
 from tensorflow.keras import backend as K
 from app.forms import JobForm
@@ -40,6 +35,8 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+
+# Here all the models trained as well as untrained are loaded onto the environment
 
 MODEL=load_model('.\\models\\covidnet.hdf5')
 ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covidCRnet.hdf5')
@@ -51,6 +48,8 @@ data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
 
 Image_Height, Image_Width = 150,150 
 BATCH_SIZE, EPOCHS = 5,5
+
+# Defining class based views here: First class is to define the functions for login and signup of the API
 
 class Registration(TemplateView):
     template_name = 'base.html'
@@ -76,16 +75,11 @@ class Registration(TemplateView):
     @login_required
     def secret_page(request):
         return render(request, 'secret_page.html')
-    # def index(request):
-    #     #context = {'a': 1}
-    #     return render(request, 'index.html')
 
-    # class SecretPage(LoginRequiredMixin, TemplateView):
-    #     template_name = 'secret_page.html'
 
+# Home is the main class based view which would have all the major functions of backend useful to run the frontend templates
 
 class Home(TemplateView):
-   # template_name = 'index.html'
 
     def login_base(request):
         return render(request, 'base_auth.html')
@@ -94,9 +88,6 @@ class Home(TemplateView):
     def index(request):
          context = {'a': 1}
          return render(request, 'index.html')
-    # def table(request):
-    #     return render(request, 'tables.html')
-    # testing comment
 
     def loadData(request):
         if request.method == 'POST':
@@ -124,8 +115,6 @@ class Home(TemplateView):
        print("request is:", request)
        if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
-            #Augument = request.POST.getlist('augment')
-            #print("augumentation value is:  ", Augument)
             Batchsize = int(request.POST.get('batchsizeVal'))
             LearningRate = float(request.POST.get('learnrateVal'))
             loss = request.POST.get('lossVal')
@@ -134,7 +123,6 @@ class Home(TemplateView):
             aug_value = request.POST.get('augVal')
             if model_input == "Fine tuning":
                 process_training.delay(Epochs,LearningRate,Batchsize,job_name = model_input)
-                #info = Home.track_jobs()
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
 
             elif model_input == "Training from scratch":
@@ -152,8 +140,7 @@ class Home(TemplateView):
         entries = Tasks.objects.all()
         information = []
         for item in entries:
-            progress = 100  # max value for bootstrap progress
-            # bar, when  the job is finished
+            progress = 100
             result = AsyncResult(item.task_id)
             if isinstance(result.info, dict):
                 progress = result.info['progress']
@@ -422,6 +409,11 @@ class Home(TemplateView):
             'covid_kaggle_model': covid_kaggle_model_DNN_layers,
             'DNN_layers': DNN_layers
         }
+        ChestCR_model_Json = {
+            'ChestCR_model': ChestCR_model_DNN_layers
+        }
+        dataJSON = dumps(dnnLayers)
+        ChestCR_dataJSON = dumps(dnnLayers)
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj=request.FILES['filePath']
@@ -437,7 +429,7 @@ class Home(TemplateView):
                 activationMapImgPath = display_activations(activations, directory=r'./media/', save=True)
                 print(activationMapImgPath)
                 return render(request,'activation_maps.html',
-                              {"layer_name": layer, "DNN_layers": ChestCR_model_DNN_layers, 'filePathName':filePathName,
+                              {"layer_name": layer, "ChestCR_model_DNN_layers": ChestCR_model_DNN_layers, "DNN_layers": ChestCR_dataJSON, 'filePathName':filePathName,
                                                               'ActivationMapImgPath': activationMapImgPath})
             else:
                 activations = get_activations(covid_kaggle_model, np.expand_dims(input_test, axis=0), layer)
@@ -448,7 +440,7 @@ class Home(TemplateView):
                                'filePathName': filePathName,
                                'ActivationMapImgPath': activationMapImgPath})
 
-        dataJSON = dumps(dnnLayers)
+
         return render(request, 'activation_maps.html', {"DNN_layers": dataJSON})
 
     def shapley_values(request):
