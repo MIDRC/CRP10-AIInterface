@@ -1,9 +1,9 @@
+# tasks.py would contain the model training tasks which are used to track, monitor while performing training and
+# the resultant is utilized to display on the progress bars
+
 from django_theme.celery import app
 from app.models import Tasks
 from time import sleep
-from celery import shared_task
-from app import views
-from tensorflow import keras
 import random
 
 normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"

@@ -8,6 +8,7 @@
 import PIL,shap, cv2, pydicom, pickle,re, io,os
 from django.shortcuts import render,redirect,HttpResponse
 import subprocess
+import slideio
 from json import dumps
 from django.core.files.storage import FileSystemStorage
 from keras.preprocessing.image import ImageDataGenerator,load_img, img_to_array
@@ -39,12 +40,11 @@ from django.views.decorators.http import require_http_methods
 # Here all the models trained as well as untrained are loaded onto the environment
 
 MODEL=load_model('.\\models\\covidnet.hdf5')
-ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covidCRnet.hdf5')
-covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\finetuning_imagenet_hpt', "rb"))
-covid_kaggle_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\covid_kagglenet.hdf5')
+ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\Saved_models\covidCRnet.hdf5')
+covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\Saved_models\finetuning_imagenet_hpt', "rb"))
+covid_kaggle_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\Saved_models\covid_kagglenet.hdf5')
 untrain_model = load_model('.\\models\\untrained_model.hdf5')
 data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
-
 
 Image_Height, Image_Width = 150,150 
 BATCH_SIZE, EPOCHS = 5,5
@@ -77,7 +77,8 @@ class Registration(TemplateView):
         return render(request, 'secret_page.html')
 
 
-# Home is the main class based view which would have all the major functions of backend useful to run the frontend templates
+# Home is the main class based view which would have all the major functions of backend useful
+# to run the frontend templates
 
 class Home(TemplateView):
 
@@ -109,10 +110,9 @@ class Home(TemplateView):
         else:
             return render(request, 'run.html',
                               context={'form': JobForm})
-        #return render(request, 'run.html')
 
+# This function performs model training as well as displays the progress bars of various steps involved in training
     def run_training(request):
-       print("request is:", request)
        if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
             Batchsize = int(request.POST.get('batchsizeVal'))
@@ -130,6 +130,9 @@ class Home(TemplateView):
                 return render(request, 'training.html', context={'message': f'You have chosen {model_input}'})
        return render(request, "training.html")
 
+
+# Function which would track the jobs from the resultant obtained via return of track_jobs function
+# once the train option is submitted on the training UI
     @require_GET
     def monitor_training(request):
         info = Home.track_jobs()
@@ -148,11 +151,6 @@ class Home(TemplateView):
                                     progress, item.task_id])
         return information
 
-    #@require_GET
-    #def monitor(request):
-     #   info = Home.track_jobs()
-      #  return render(request, 'monitor.html', context={'info': info})
-
     @require_GET
     def cancel_job(request, task_id=None):
         result = AsyncResult(task_id)
@@ -167,7 +165,10 @@ class Home(TemplateView):
         info = Home.track_jobs()
         return render(request, 'monitor.html', context={'info': info})
 
-
+# Idea behind this function is one chosen it would re-direct to Jupyter notebooks and integrate it with the
+# API environment so that it would be helpful for advanced users to not only use the available options/models
+# but also write/customize from the code
+    # To-do
     def jupyter_notebook(request):
        if request.method == 'POST':
             b = subprocess.check_output("jupyter-lab list".split()).decode('utf-8')
@@ -189,12 +190,25 @@ class Home(TemplateView):
         # You can here add data to your path if you want to open file or anything
        return render(request, "jupyter_notebook.html")
 
+# This function would pre-process and obtain the pixel array from the dicom image, utilized to train the
+    #Chest X-ray classification model (VGG19)
     def process_scan(filepath):
         scan = pydicom.read_file(str(filepath))
         scan = scan.pixel_array
         scan = cv2.resize(scan, (224, 224))
         return scan
 
+    # This function would pre-process and obtain the image array from the pathology slide, utilized to train the
+    # pathology MDS classification model
+    def process_slide(filepath):
+        slide = slideio.open_slide(filepath,'SVS')
+        scene = slide.get_scene(0)
+        image = scene.read_block(size=(150, 150))
+        input_test = np.array(image)
+        return input_test
+
+    # scanpath function would return all the filenames with the full path/location of the files located
+    # in a specific folder
     def scanpath(Base_path):
        scans = []
        for root, dirs, files in os.walk(Base_path):
@@ -202,6 +216,9 @@ class Home(TemplateView):
                scans.append(os.path.join(root, fname))
        return scans
 
+    # pixel array function would return the train, test, validation split of the data by taking the input paths of
+    # data and then using the functions - scanpath, process_scan pre-process and obtain the input image arrays needed
+    # to train the VGG19 model
     def pixelarray (normal_scan_path,abnormal_scan_path):
         normal_scan_paths = Home.scanpath(normal_scan_path)
         abnormal_scan_paths = Home.scanpath(abnormal_scan_path)
@@ -218,7 +235,8 @@ class Home(TemplateView):
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=8)
         return X_train, y_train, X_test, y_test, X_val, y_val
 
-
+    # model2 would return a pre-trained VGG19 model with additional classification head,
+    # this model is utilized for fine-tuning purposes
     def model2(n_classes=2, input_shape=(224, 224, 1)):
        vgg_model = VGG19(include_top=False, weights=None, input_shape=input_shape)
        flat = Flatten()(vgg_model.layers[-1].output)
@@ -227,44 +245,7 @@ class Home(TemplateView):
        model = Model(inputs=vgg_model.inputs, outputs=soft)
        return model
 
-
-    def conv2d_block(input_tensor, n_filters, kernel_size=3):
-        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(input_tensor)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-        x = Conv2D(filters=n_filters, kernel_size=kernel_size, kernel_initializer="he_normal", padding="same")(x)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-        x = Conv2D(filters=2 * n_filters, strides=(2, 2), kernel_size=kernel_size, kernel_initializer="he_normal",
-                   padding="same")(x)
-        x = BatchNormalization()(x)
-        x = Activation("relu")(x)
-
-        return x
-
-
-    def model4(n_classes, input_shape):
-        '''
-           Classifier following encoder with random initialization (inspired by VGG structure)
-           input size must be fixed due to Flat+Dense
-
-           n_classes: number of ground truth classes
-           input_shape: shape of single input datum
-           '''
-        global Input
-        Input = Input(input_shape, K.learning_phase())
-        x = Home.conv2d_block(Input, 8)
-        x = Home.conv2d_block(Input, 16)
-        x = Home.conv2d_block(Input, 32)
-        x = Home.conv2d_block(Input, 64)
-        flat = Flatten()(x)
-        proj = Dense(1024, activation="relu")(flat)
-        soft = Dense(n_classes, activation="softmax")(proj)
-
-        model = Model(inputs=[Input], outputs=[soft])
-
-        return model
-
+    #training_model function would perform the model training utilizing the parameters chosen from frontend (training.html)
     def training_model(request):
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
@@ -276,20 +257,10 @@ class Home(TemplateView):
             if model_input == "Fine tuning":
                 # load data paths, process scans to obtain pixel array and generate labels
                 print('You have chosen:',model_input,",extracting the pixel array of dicom images to train the model...")
-                X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path,abnormal_scan_path)
+                X_train, y_train, X_test, y_test, X_val, y_val = Home.pixelarray(normal_scan_path, abnormal_scan_path)
                 CRcl_model = Home.model2()
-                CRcl_model.compile(
-                    loss="binary_crossentropy",
-                    optimizer=keras.optimizers.Adam(learning_rate=0.001),
-                    metrics=["acc"],
-                )
-                CRcl_model.fit(
-                    X_train,
-                    y_train,
-                    epochs=5,
-                    batch_size=10,
-                    validation_data=(X_val, y_val),
-                )
+                CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=0.001),metrics=["acc"],)
+                CRcl_model.fit(X_train,y_train,epochs=5,batch_size=10,validation_data=(X_val, y_val),)
 
             context = ChestCR_model.history['accuracy']
             return render(request,'training.html',{"context": context,'epochs':Epochs})
@@ -298,6 +269,7 @@ class Home(TemplateView):
     def removespaces(file_with_space):
         return os.rename(file_with_space,file_with_space.replace(' ', '_'))
 
+    # Testing function to predict the image labels after the model is trained.
     def testing(request):
         if request.method == 'POST':
             fileObj=request.FILES['filePath']
@@ -340,6 +312,7 @@ class Home(TemplateView):
                 return render(request,'testing.html',context)
         return render(request,'testing.html')
 
+    # plot_acc function returns the acc, loss plots of the trained model
     def plot_acc(request):
         covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\finetuning_imagenet_hpt', "rb"))
         fig, ax = plt.subplots(1, 2, figsize=(14, 5))
@@ -360,6 +333,8 @@ class Home(TemplateView):
         canvas.print_png(response)
         return response
 
+    # preprocess_image would perform pre-processing for the covid kaggle model and re-size
+    # it to perform testing, visualization
     def preprocess_image(img_path, model=None, rescale=255, resize=(256, 256)):    
         assert type(img_path) == str, "Image path must be a string"
         assert (
@@ -378,9 +353,11 @@ class Home(TemplateView):
                 img = np.expand_dims(img, axis=0)
         return img
 
-
+    # heat_maps and activation_maps are utilized to perform interpretability/visualization of the black box AI algorithms.
+    # Here we utilize a framework called keract and the user would have an option to choose an input image as well as a DNN layer
+    # which would return a heatmap, activation map
     def heat_maps(request):
-        DNN_layers = [layer.name for layer in ChestCR_model.layers]
+        DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj = request.FILES['filePath']
@@ -388,8 +365,9 @@ class Home(TemplateView):
             filePathName = fs.save(fileObj.name, fileObj)
             filePathName = fs.url(filePathName)
             test_image = '.' + filePathName
+            #input_test_array = Home.process_slide(test_image)
             input_test = Home.process_scan(test_image)
-            activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
+            activations = get_activations(covid_kaggle_model, np.expand_dims(input_test, axis=0), layer)
             #input_test = Home.preprocess_image(img_path=test_image, model=covid_kaggle_model,
                                                #resize=(Image_Height, Image_Width))
             #activations = get_activations(covid_kaggle_model, input_test, layer)
@@ -443,6 +421,7 @@ class Home(TemplateView):
 
         return render(request, 'activation_maps.html', {"DNN_layers": dataJSON})
 
+    # shapley_values function is utilized to obtain shap plot for the images that user wanted to interpret
     def shapley_values(request):
         if request.method == 'POST':
             X_train = np.load(r'C:\Users\4472829\PycharmProjects\Pre_run_numpyarrays\xtrain.npy')
