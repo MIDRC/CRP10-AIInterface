@@ -23,12 +23,14 @@
 <form method="POST" enctype="multipart/form-data" action=" ">
  {% csrf_token %}
 <div class="input-group">
-    <h2>choose the number of training samples:</h2>
+    <h2>choose the number of background examples to take an expectation over:</h2>
     <input class="form-control" type="text" placeholder="train_samples"  name="trainsamplesVal">
 </div>
     <div class="input-group">
-    <h2>choose on how many number of images you wanted to see the model prediction:</h2>
-    <input class="form-control" type="text" placeholder="train_samples"  name="trainsamplesVal">
+    <h2>initial range for predictions:</h2>
+    <input class="form-control" type="text" placeholder="model_preds"  name="modelVal1">
+        <h3>Max range for predictions:</h3>
+    <input class="form-control" type="text" placeholder="model_preds"  name="modelVal2">
 </div>
  <input type="submit" value="Submit"></div>
  <h2>Shap plot is:</h2>

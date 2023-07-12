@@ -35,6 +35,10 @@ from app.models import Tasks
 from django.views.decorators.http import require_GET
 from django.views.decorators.http import require_http_methods
 
+# Selenium setup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
 # Create your views here.
 
 # Here all the models trained as well as untrained are loaded onto the environment
@@ -357,7 +361,7 @@ class Home(TemplateView):
     # Here we utilize a framework called keract and the user would have an option to choose an input image as well as a DNN layer
     # which would return a heatmap, activation map
     def heat_maps(request):
-        DNN_layers = [layer.name for layer in covid_kaggle_model.layers]
+        DNN_layers = [layer.name for layer in ChestCR_model.layers]
         if request.method == 'POST':
             layer = request.POST.get('layers')
             fileObj = request.FILES['filePath']
@@ -367,12 +371,8 @@ class Home(TemplateView):
             test_image = '.' + filePathName
             #input_test_array = Home.process_slide(test_image)
             input_test = Home.process_scan(test_image)
-            activations = get_activations(covid_kaggle_model, np.expand_dims(input_test, axis=0), layer)
-            #input_test = Home.preprocess_image(img_path=test_image, model=covid_kaggle_model,
-                                               #resize=(Image_Height, Image_Width))
-            #activations = get_activations(covid_kaggle_model, input_test, layer)
+            activations = get_activations(ChestCR_model, np.expand_dims(input_test, axis=0), layer)
             heatMapImgPath = display_heatmaps(activations, input_test, directory=r'./media/', save=True)
-            #print( heatMapImgPath)
             return render(request, 'heat_maps.html',
                       {"layer_name": layer, "DNN_layers": DNN_layers, 'filePathName': filePathName,
                        'HeatMapImgPath':  heatMapImgPath})
@@ -426,13 +426,19 @@ class Home(TemplateView):
         if request.method == 'POST':
             X_train = np.load(r'C:\Users\4472829\PycharmProjects\Pre_run_numpyarrays\xtrain.npy')
             X_test = np.load(r'C:\Users\4472829\PycharmProjects\Pre_run_numpyarrays\xtest.npy')
-            background = X_train[np.random.choice(X_train.shape[0], 10, replace=False)]
+            background_samples = int(request.POST.get('trainsamplesVal'))
+            background = X_train[np.random.choice(X_train.shape[0], background_samples, replace=False)]
             e = shap.DeepExplainer(ChestCR_model, np.expand_dims(background, axis=-1))
             X_test_expand = np.expand_dims(X_test, axis=-1)
             X_test_float = X_test_expand.astype(float)
-            shap_values = e.shap_values(X_test_float[5:7])
+
+            # Write an if condition here if the chosen values are in the range then plot the shap plot if not throw
+            # a warning stating as a pop-up you have to chose between (0-10 etc)
+            model_preds_initial = int(request.POST.get('modelVal1'))
+            model_preds_final = int(request.POST.get('modelVal2'))
+            shap_values = e.shap_values(X_test_float[model_preds_initial:model_preds_final])
             X_testplot_float = X_test.astype(float)
-            shap.image_plot(shap_values, X_testplot_float[5:7], show=False)
+            shap.image_plot(shap_values, X_testplot_float[model_preds_initial:model_preds_final], show=False)
             plt.savefig('./media/shap.png')
             plt.close()
             image_path = r'./media/shap.png'
