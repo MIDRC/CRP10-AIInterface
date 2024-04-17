@@ -4,3 +4,4 @@ Django_VirtualEnv/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 Django_VirtualEnv/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd 
+/testFiles
