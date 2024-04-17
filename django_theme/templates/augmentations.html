@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+{% block title %} Augmentation Viewing {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<!--<!DOCTYPE html>
+<html lang="en"> -->
+   {% load static %}
+
+   <head>
+	<title> Augmentations</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="{% static 'css/material-design-iconic-font.min.css' %}" media="all">
+    
+	
+	
+	<!--previous head
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+	<link href="{% static 'css/style.css' %}" rel="stylesheet"> </head>
+	-->
+
+<body>
+<!---->
+	<div class="wrapper wrapper--w780">
+		<div class="card card-3">
+		   <div class="card-heading"></div>
+		   <div class="card-body">
+			  <h2 class="title">Augmentation Viewing</h2>
+			  
+			  <form method="POST" enctype="multipart/form-data" action=" ">
+				 {% csrf_token %}
+				  <div class="input-group">
+					<div class="rs-select2 js-select-simple select--no-search">
+					   <select name="image" required>
+						  <option value="">Choose the Augmented File to View</option>
+						  {% for i in files %}
+						  
+						  <option>{{i}}</option>
+		
+						  {% endfor %}
+					   </select>
+					   <div class="select-dropdown"></div>
+					</div>
+				 </div>
+				 <input type="submit" value="View">
+			</form>
+		   </div>
+		</div>
+<!-- later, check if original and aug have been passed. probably just make it (for i in og print this) -->
+		<div class="col-md-4 col sm-4" style = "display: -webkit-inline-box;">
+			<h2>{{ogMes}}</h2> <img src={{og}} class="img-fluid" alt='' style="width: 400px;">
+				<h2>{{augMes}}</h2> <img src={{aug}} class="img-fluid" alt='' style="width: 400px;"></div>Z
+	 </div>
+  </div>
+  
+</body>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+
+{% endblock javascripts %}

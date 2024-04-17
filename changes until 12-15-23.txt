@@ -1,0 +1,91 @@
+﻿PYTHON FILE CHANGES
+
+* Views.py
+
+   * Imports scripts from scripts folder, which is defined in local_settings (is a directory within MAI_CARE)
+
+   * Process_scan
+      * Added data augmentation techniques
+         * Changed arguments to allow for this, every function that calls process_scan has been altered to match this
+      * Saves arrays to images for easy viewing for both original dicom files and the augmented ones
+         * Relatively simple to disable if needed, such as when visualization is not needed for testing
+      * Calls script for aug to visualize activation map
+
+   * Pixelarray
+      * Creates a folder to contain augmented images, deletes folder if it existed previously to clear the contents from previous runs
+      * Updated to match the new implementation of process_scan
+
+   * Heat_maps and activation_maps
+      * Creates a folder to contain created feature maps for each type, otherwise deletes a previously existing folder and then creates it again to ensure no data from previous runs is accessed
+         * Directs results to new folder for easy access
+
+   * Augmentations
+      * Added
+      * Grabs the folder with all of the augmented images so that the API can display them to the user
+
+
+* Template_local_settings.py
+
+   * Added the ability to select what GPU on DGX the application and rabbitmq server run on
+      * Will ask for the requested GPU in the command line after either part of the application is initialized (python manage.py runserver)
+         * Using makefile, “make d” starts app and “make r” starts rabbitmq, with the GPU prompt coming up after the make command
+
+   * Set paths to be local/in app to give other parts of the application consistent resources
+      * Changed various parts of views.py and tasks.py due to this, recorded in their respective sections
+      * Still requires (AB)NORMAL_SCAN_PATH to be manually added since those are supplied by the user (outside of project itself)
+      * Models can be put into the “django_theme/models” folder in MAI_CARE, which is the default, but any location works as long as the respective model’s path is added to their variable
+
+   * Sets up media folder with proper structure 
+      * Holds created augmented images, feature maps, etc
+
+
+* Tasks.py
+   * Added ability to select other optimizers besides Adam
+      * While the dropdown menu had more than Adam, each option directed to use Adam regardless. Now the dropdown menu is functional
+
+   * Loss functions are now properly grabbed and used for compilation
+      * Previously just assumed BCE loss was used, regardless of selection
+
+
+WEB PAGES / HTML FILES
+
+* Augmentations.html
+   * Created
+   * Lets user select augmented image, and displays both the original and the augmented image
+
+* Activation/Heat_Maps.html
+   * Displays desired feature map when given an image
+   * Result has hovering zoom feature
+   * File system stores the result for viewing
+
+* Sidebar.html
+   * Added dropdown menu to sidebar
+   * Changed “Radiomics” to Augmentations and redirected it accordingly
+      * Previously just linked to “testing.html”, and no “radiomics” page exists
+
+
+SCRIPTS
+
+* wrappers.py
+   * Display_activations
+      * Overrides default display_activations to return output filename
+      * Allows the saving and display of feature maps on the api
+
+* Data_visualization.py
+   * Dcm_jpg
+      * Copies data from dicom file, creates a new jpg file with it, and deletes dicom file
+         * Process_scan creates both a copy of the original dicom file in media/ogImg and the augmented image in media/augImg
+         * Original dicom file is not deleted, just the copy in media/ogImg
+      * Scales the pixels of the dicom file so that they are displayed properly in a jpg file, otherwise is output as a mostly black image
+
+
+TESTING
+
+* django_theme/tests.py
+   * Selenium testing that goes through the login process and asserts the proper web pages are visited and have the right tags
+   * Uses webdriver in the testing folder, as selenium is not compatible with the most up to date chrome version
+
+* Testzip (folder)
+   * Contains segmented zip folder that contains the proper chrome version, as chrome on Moffitt computers (including DGX) cannot be uninstalled or downgraded
+      * Does not interfere with whatever chrome version is installed, as unzipping the segmented zip folders results in an independent exe and all of the necessary files chrome needs. Preferences and everything else is not shared between both chrome files
+   * Put unzipped files in the testing folder

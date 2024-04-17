@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Static assets -->
+{% load static %}
+{% load crispy_forms_tags %}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+     {% block title %}{% endblock %}
+  </title>
+
+    <!-- Specific Page CSS goes HERE  -->
+    {% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/login.css" %}">
+    <link rel="icon" href="http://media.glassdoor.com/sqll/40232/moffitt-cancer-center-squarelogo-1565108527247.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {% endblock stylesheets %}
+</head>
+<body >
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
