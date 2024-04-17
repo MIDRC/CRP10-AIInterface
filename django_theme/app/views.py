@@ -8,10 +8,10 @@
 import PIL,shap, cv2, pydicom, pickle,re, io,os
 from django.shortcuts import render,redirect,HttpResponse
 import subprocess
-import slideio
+#import slideio
 from json import dumps
 from django.core.files.storage import FileSystemStorage
-from keras.preprocessing.image import ImageDataGenerator,load_img, img_to_array
+from tensorflow.keras.preprocessing.image import ImageDataGenerator,load_img, img_to_array
 from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.contrib.auth.models import User
@@ -43,12 +43,10 @@ from selenium.webdriver.chrome.options import Options
 
 # Here all the models trained as well as untrained are loaded onto the environment
 
-MODEL=load_model('.\\models\\covidnet.hdf5')
-ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\Saved_models\covidCRnet.hdf5')
-covidCR_model_2 = pickle.load(open(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\Saved_models\finetuning_imagenet_hpt', "rb"))
-covid_kaggle_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\Saved_models\covid_kagglenet.hdf5')
-untrain_model = load_model('.\\models\\untrained_model.hdf5')
-data = 'C:\\Users\\4472829\\Downloads\\covid19\\dataset'
+MODEL = load_model('.\\models\\covidnet.hdf5')
+ChestCR_model = load_model(r'C:\Users\4472829\PycharmProjects\Jupyter_notebook\saved_models\covidCRnet.hdf5')
+covidCR_model_2 = pickle.load(open('.\\models\\finetuning_imagenet_hpt', "rb"))
+covid_kaggle_model = load_model('.\\models\\\covid_kagglenet.hdf5')
 
 Image_Height, Image_Width = 150,150 
 BATCH_SIZE, EPOCHS = 5,5

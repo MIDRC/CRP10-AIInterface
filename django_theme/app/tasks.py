@@ -5,6 +5,8 @@ from django_theme.celery import app
 from app.models import Tasks
 from time import sleep
 import random
+import keras
+from app import views
 
 normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"
 abnormal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive"
@@ -32,14 +34,16 @@ def process_training(self,Epochs,LearningRate, Batchsize,job_name =None):
     b.save()
     print(LearningRate)
     self.update_state(state='Pre-processing', meta={'progress': '33'})
-    #X_train, y_train, X_test, y_test, X_val, y_val = views.Home.pixelarray(normal_scan_path, abnormal_scan_path)
-    sleep(random.randint(5, 10))
+    X_train, y_train, X_test, y_test, X_val, y_val = views.Home.pixelarray(normal_scan_path, abnormal_scan_path)
+    #sleep(random.randint(5, 10))
+
     self.update_state(state='compiling', meta={'progress': '66'})
-    #CRcl_model = views.Home.model2()
-    #CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=LearningRate),metrics=["acc"],)
-    sleep(random.randint(5, 10))
+    CRcl_model = views.Home.model2()
+    CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=LearningRate),metrics=["acc"],)
+    #sleep(random.randint(5, 10))
+
     self.update_state(state='fitting and training model', meta={'progress': '100'})
-    #CRcl_model.fit(X_train, y_train, epochs=Epochs, batch_size=Batchsize, validation_data=(X_val, y_val),)
-    sleep(random.randint(5, 10))
+    CRcl_model.fit(X_train, y_train, epochs=Epochs, batch_size=Batchsize, validation_data=(X_val, y_val),)
+    #sleep(random.randint(5, 10))
 
 

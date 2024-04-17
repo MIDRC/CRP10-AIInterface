@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% block title %} Activation maps {% endblock %}
+{% block title %} Heat maps {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -39,7 +39,6 @@
 			<input type="submit" value="Submit">
 			<div class="col-md-4 col sm-4">
 				<h2>Heat Map is:</h2> <img src={{HeatMapImgPath}} class="img-fluid" alt='' style="width: 800px;"> {{heatMapImgPath}} </div>
-        <!--<h2>Heat Map:</h2> <img src={{HeatMapImgPath2}} class="img-fluid" alt='' style="width: 800px;"> {{heatMapImgPath2}} </div> -->
 		</section>
 		<script src="{% static 'js/jquery.min_HM.js' %}"></script>
 		<script src="{% static 'js/popper_HM.js' %}"></script>
