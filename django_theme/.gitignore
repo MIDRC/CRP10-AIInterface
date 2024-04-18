@@ -5,6 +5,7 @@
 
 /testFiles
 /django_theme/media
+/django_theme/models
 /django_theme/db.sqlite3
 /django_theme/app/user_jobs.json
 ### Python template

@@ -1,30 +1,61 @@
+{% load static %}
 
+<style>
+  .loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+<head>
+  <script src= 
+  "https://code.jquery.com/jquery-3.5.1.js"> 
+      </script> 
+  
+	
+</head>
+<script >
+  function loadDoc() {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+    document.getElementById("info").innerHTML = this.responseText;
+    }
+  xhttp.open("GET", "jobs", true);
+  xhttp.send();
+  setTimeout(loadDoc, 10000); //updates with respect to milliseconds
+  //note, at ten seconds for now but may be changed or triggered a different way
+}
+</script>
+<body onload="loadDoc()">
   <div class="fixed-plugin">
     <div class="dropdown show-dropdown">
       <a href="#" data-toggle="dropdown">
         <i class="fa fa-cog fa-2x"> </i>
       </a>
-      <ul class="dropdown-menu">
-        <li class="header-title"> Sidebar Background</li>
+      <ul class="dropdown-menu" id="info" right="0px">
+        <li><a href ="{% url 'monitor'%}" target="popup" onclick="window.open('{% url 'monitor'%}','popup','width=324,height=254'); return false;">Pop out and manage jobs</a></li>
+        <script > loadDoc();</script>
+        <!-- <li class="header-title"> Current Jobs</li>
         <li class="adjustments-line">
           <a href="javascript:void(0)" class="switch-trigger background-color">
-            <div class="badge-colors text-center">
-              <span class="badge filter badge-primary active" data-color="primary"></span>
-              <span class="badge filter badge-info" data-color="blue"></span>
-              <span class="badge filter badge-success" data-color="green"></span>
+            <div class="badge-colors text-center" id="info">
+             <script > loadDoc();</script>
+              </div>
             </div>
             <div class="clearfix"></div>
           </a>
-        </li>
-        <li class="adjustments-line text-center color-change">
-          <span class="color-label">LIGHT MODE</span>
-          <span class="badge light-badge mr-2"></span>
-          <span class="badge dark-badge ml-2"></span>
-          <span class="color-label">DARK MODE</span>
-        </li>
+        </li> -->
       </ul>
 
       <br />
     </div>
   </div>
-  
+</body>

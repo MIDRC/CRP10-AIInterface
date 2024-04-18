@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% block title %} Heat maps {% endblock %}
+{% block title %} Heat Maps {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -8,18 +8,44 @@
 <!--<!DOCTYPE html>
 <html lang="en"> -->
    {% load static %}
-
+   <style>
+	* {box-sizing: border-box;}
+	
+	.img-zoom-container {
+	  position: relative;
+	  display: -webkit-inline-box;
+	}
+	
+	.img-zoom-lens {
+	  position: absolute;
+	  border: 1px solid #d4d4d4;
+	  /*set the size of the lens:*/
+	  width: 40px;
+	  height: 40px;
+	}
+	
+	.img-zoom-result {
+	  /* border: 1px solid #d4d4d4; */
+	  /*set the size of the result div:*/
+	  width: 300px;
+	  height: 300px;
+	  margin-left: 30px;
+	}
+	</style>
+	<!-- in script for zooming, allow the user to set the amount of zoom.
+	will be carried over thru a button (set zoom level and confirm, or add the +- buttons to streamline it) -->
 <head>
+	<title>Multiselect 09</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
 	<link href="{% static 'css/style.css' %}" rel="stylesheet"> </head>
+	<script src="{% static 'js/imageZoom.js' %}"></script>
 
 <body>
-	<form method="POST" enctype="multipart/form-data" action=" ">
-        {% csrf_token %}
+	<form method="POST" enctype="multipart/form-data" action=" "> {% csrf_token %}
 		<section class="ftco-section">
 			<div class="container">
 				<div class="row justify-content-center">
@@ -35,23 +61,37 @@
 			</div>
 			<div class="col-md-4 col sm-4">
 				<label form="formFileabled" class="form-label">Upload your project files here:</label>
-				<input name="filePath" class="form-control" type="file" id="formFileabled" abled /> </div>
-			<input type="submit" value="Submit">
-			<div class="col-md-4 col sm-4">
-				<h2>Heat Map is:</h2> <img src={{HeatMapImgPath}} class="img-fluid" alt='' style="width: 800px;"> {{heatMapImgPath}} </div>
-		</section>
+				<input name="filePath" class="form-control" type="file" id="formFileabled" abled />
+				<input type="submit" value="Submit">
+			</div>
+			<!--<div>DNN layer chosen is:{{layer_name}}</div>-->
+			<!--<h2>Input image:</h2>
+                <img src={{filePathName}} class="img-fluid" alt='imagename' style="width: 400px;"> -->
+			
+			
+			
+			<!-- make dropdown inline with everything with its own seperate button that alters the color scheme-->
+				<div class="col-md-4 col sm-4">
+				<!-- <h2>Activation Map:</h2> <img src={{ActivationMapImgPath}} class="img-fluid" alt='' style="width: 400px;"> {{activationMapImgPath}} </div> -->
+				<div class="img-zoom-container">
+					<img id="myimage" src={{HeatMapImgPath}} class="img-fluid" alt='' style="width: 400px;">
+					<div id="myresult" class="img-zoom-result" style = "width: 400px;"></div>
+				  </div>
+				<h2>{{layer_name}}</h2>
+				<h2>{{key}}</h2>
+			</section>
+		<script>view</script>
 		<script src="{% static 'js/jquery.min_HM.js' %}"></script>
 		<script src="{% static 'js/popper_HM.js' %}"></script>
 		<script src="{% static 'js/bootstrap.min.js' %}"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 		<script src="{% static 'js/main_HM.js' %}"></script>
 	</form>
+	<script>imageZoom("myimage", "myresult");</script>
 </body>
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-
-
 {% endblock javascripts %}

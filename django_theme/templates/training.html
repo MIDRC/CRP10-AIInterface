@@ -23,7 +23,9 @@
       <link rel="stylesheet" href="{% static 'css/select2.min_training.css' %}" media="all">
       <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}" media="all">
       <!-- Main CSS-->
-      <link rel="stylesheet" href="{% static 'css/main_training.css' %}" media="all">
+      <link rel="stylesheet" href="{% static 'css/main_training.css' %}" media="all"> 
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
    </head>
    <body>
 
@@ -33,11 +35,12 @@
                </div>
                <div class="card-body">
                   <h2 class="title">DNN Model Training</h2>
-
+                  <div class="infoIcon">
+          <a href="#" class="a"><img src="https://cdn.onlinewebfonts.com/svg/img_151567.png" alt="info icon" /></a>
+          <span class="extraInfo">Extra Info</span>
+        </div>
                   <form method="POST">
                      {% csrf_token %}
-                      <div class="icon">i</div>
-                      <div class="info">Your information.</div>
                       <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
                            <select name="vggVal" required>
@@ -47,6 +50,7 @@
                                <option>Feature extraction</option>
                               <option>Training from scratch</option>
                            </select>
+                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="VGG" style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
                         </div>
                      </div>
@@ -58,37 +62,63 @@
                               <option>Yes</option>
                               <option>No</option>
                            </select>
+                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Data Augmentation" style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
                         </div>
                      </div>
-                     <div class="checkbox-test" style="display: none">
-                           <input type="checkbox" id="Rotate" name="augment" value="Rotate">
-                           <label for="Rotate">Rotate</label>
-                           <input type="checkbox" id="Zoom" name="augment" value="Zoom">
-                           <label for="Zoom">Zoom</label>
-                           <input type="checkbox" id="VFlip" name="augment" value="VFlip">
-                           <label for="VFlip">verticalflip</label>
-                           <input type="checkbox" id="HFlip" name="augment" value="HFlip">
-                           <label for="HFlip">horizontalflip</label>
-                           <input type="checkbox" id="shear" name="augment" value="shear">
-                           <label for="shear">Shear</label>
+                     <div class="checkbox-test">
+                        <div class="form-check">
+                           <input  class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                           
+                         </div>
+                           <div class="row">
+                              
+                              <div class="col-4"><label for="Rotate">Rotate</label></div>
+                              <div class="col-1"><input type="checkbox"  id="Rotate" name="Rotate" value="Rotate" style="vertical-align: bottom;"></div>
+                              
+                           </div>
+                           <div class="row">
+                              
+                              <div class="col-4"><label for="Zoom">Zoom</label></div>
+                              <div class="col-1"><input type="checkbox" id="Zoom" name="Zoom" value="Zoom" style="vertical-align: bottom;"></div>
+                           </div>
+                           <div class="row">
+                              
+                              <div class="col-4"><label for="VFlip">verticalflip</label></div>
+                              <div class="col-1"><input type="checkbox" id="VFlip" name="augment" value="VFlip" style="vertical-align: bottom;"></div>
+                           </div>
+                           <div class="row">
+                              
+                              <div class="col-4"><label for="HFlip">horizontalflip</label></div>
+                              <div class="col-1"><input type="checkbox" id="HFlip" name="augment" value="HFlip" style="vertical-align: bottom;"></div>
+                           </div>
+                           <div class="row">
+                             
+                              <div class="col-4"><label for="shear">Shear</label></div>
+                              <div class="col-1"><input type="checkbox" id="shear" name="augment" value="shear"></div>
+                           </div>
+                           
+                           
+                           
                      </div>
 
                      <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Epochs"  name="epochVal" required>
+                        <div><input class="form-control" type="text" placeholder="Epochs"  name="epochVal" required></div>
+                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Epochs" style="cursor:pointer;color:blue;margin: auto;">info</span>
                      </div>
                      <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
                            <select name="optimizerVal" required>
                               <option value="">Optimizer</option>
-                              <option>Adam</option>
-                              <option>RMSProp</option>
-                              <option>SGD</option>
-                               <option>MB-SGD</option>
-                               <option>ADA grad</option>
-                               <option>ADA delta</option>
-                               <option>NGA</option>
+                              <option value="Adam">Adam</option>
+                              <option value="RMSProp">RMSProp</option>
+                              <option value="SGD">SGD</option>
+                               <option value="MB-SGD">MB-SGD</option>
+                               <option value="ADA">ADA grad</option>
+                               <option value="ADA delta">ADA delta</option>
+                               <option value="NGA">NGA</option>
                            </select>
+                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Optimizer" style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
                         </div>
                      </div>
@@ -103,22 +133,30 @@
                                <option>MAE loss</option>
                                <option>CLD loss</option>
                            </select>
+                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Loss" style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
+                           
                         </div>
                      </div>
                      <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Batchsize"  name="batchsizeVal" required>
+                        <div><input class="form-control" type="text" placeholder="Batchsize"  name="batchsizeVal" required></div>
+                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Batch Size" style="cursor:pointer;color:blue;margin:auto">info</span>
                      </div>
                      <div class="input-group">
-                        <input class="form-control" type="text" placeholder="LearningRate" name="learnrateVal" required>
+                        <div><input class="form-control" type="text" placeholder="LearningRate" name="learnrateVal" required></div>
+                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Learning Rate" style="cursor:pointer;color:blue;margin:auto;">info</span>
                      </div>
                      <div class="p-t-10">
-                        <a href="{% url 'monitor_training' %}">
-                             <button class="button" type="submit" name="train" value="Train">Train</button></a>
-                     </div>
+                         <a href="{% url 'monitor_training' %}">
+                             <button class="button" type="submit" name="train" value="Train" onclick="javascript:window.open('{% url 'monitor'%}');">Train</button></a>
+                             <!-- <button onclick="submit(); window.location.href='{% url 'monitor'%}';" name="train" value="Train">Train</button> -->
+                           </div>
                 </form>
-
-                   <p><i>{{ message }}</i></p>
+                    <!--<button class="button">Monitor</button>
+                       <button class="button" type="submit" name="train" value="Train">Train/Monitor</button>
+                </a>-->
+                
+                   <!-- <p><i>{{ message }}</i></p> -->
                </div>
             </div>
          </div>
@@ -128,7 +166,6 @@
           function displayOptions(className, elementValue){
             document.getElementsByClassName(className)[0].style.display = elementValue.value == "Yes" ? 'block' : 'none';
           };
-
       </script>
       <!-- Jquery JS-->
       <script type="javascript" href="{% static 'js/jquery.min.js' %}"></script>
@@ -137,23 +174,11 @@
       <script type="javascript" href="{% static 'js/select2.min_training.js' %}"></script>
       <script type="javascript" href="{% static 'js/moment.min.js' %}"></script>
       <script type="javascript" href="{% static 'js/daterangepicker.js' %}"></script>
+      <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
+      <!-- Main JS-->
       <script type="javascript" href="{% static 'js/global.js' %}"></script>
-
-   <style>
-       .icon{
-            color: white;
-           display: block;
-           float: right;
-           width:6%;
-        }
-        .info{
-            display: none;
-        }
-        .icon:hover ~ .info{
-            display: block;
-        }
-    </style>
-
    </body>
    <!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>

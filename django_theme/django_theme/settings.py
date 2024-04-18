@@ -12,8 +12,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 from pathlib import Path
+import tensorflow as tf
+from django.conf import settings
+#below are selectors/limiters for dgx cpus
 
-
+#gpuNum = input('what gpu will be used?') (will clean up input and allow gpu selection not in code)
+#os.environ["CUDA_VISIBLE_DEVICES"]="7"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +32,7 @@ SECRET_KEY = 'dvh08$unj$vf-x7(n-n#w@y*xy!2^sv25a)5=tkkn)2c@@@%4#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Midrcapi-env-2.eba-aisjbcr7.us-east-1.elasticbeanstalk.com', '127.0.0.1']
+ALLOWED_HOSTS = [ '127.0.0.1']
 
 
 # Application definition
@@ -140,6 +144,24 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "staticfiles"),
 ]
+
+try:
+    from django_theme.local_settings import *
+except ImportError:
+    pass
+
 LOGIN_REDIRECT_URL = 'index'
-LOGOUT_REDIRECT_URL = 'users'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+LOGOUT_REDIRECT_URL = 'login'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# TODO Once the email username and password obtained revert to smtp.EmailBackend
+#EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+DEFAULT_FROM_EMAIL='naveena.gorre@moffitt.org'
+EMAIL_FILE_PATH = BASE_DIR/"sent_emails"
+
+EMAIL_HOST = "mailint.moffitt.usf.edu"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = False
+# EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_BACKEND ="app.emailer.EmailBackend" # "django.core.mail.backends.smtp.EmailBackend"

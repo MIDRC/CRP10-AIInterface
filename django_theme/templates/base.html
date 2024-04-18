@@ -1,18 +1,18 @@
-<!-- This is the main website template before login -->
-
 <!DOCTYPE html>
+
 <html lang="en">
+
 {% load static %}
 
   <head>
-
+    <title>Moffitt</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,700,900" rel="stylesheet">
 
-    <title>MIDRC AI Interface for COVID</title>
+    <title>MAI-CARE</title>
 <!--
 MAIIO
 https://templatemo.com/tm-535-softy-pinko
@@ -53,9 +53,11 @@ https://templatemo.com/tm-535-softy-pinko
                         <ul class="nav">
                             <li><a href="#welcome" class="active">Home</a></li>
                             <li><a href="#features">API</a></li>
+                            <li><a href="#work-process">MIDRC</a></li>
                             <li><a href="#testimonials">Team</a></li>
                         </ul>
                         <a class='menu-trigger'>
+                            <span>Menu</span>
                             <span>Menu</span>
                         </a>
                         <!-- ***** Menu End ***** -->
@@ -74,7 +76,8 @@ https://templatemo.com/tm-535-softy-pinko
             <div class="container">
                 <div class="row">
                     <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-                        <h1>MIDRC AI Interface<br>for Covid</h1>
+                        <h1>MAI-CARE</h1>
+                        <h1>MIDRC CRP10 AI Interface for <br>Covid and Cancer Research</h1>
                         <a href="#features" class="main-button-slider">Discover More</a>
                     </div>
                 </div>
@@ -94,12 +97,10 @@ https://templatemo.com/tm-535-softy-pinko
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.2s">
                             <div class="features-small-item">
                                 <div class="icon">
-                                    <i> <img src="{% static 'images/featured-item-01.png' %}" alt=""></i>
+                                    <i><img src="images/featured-item-01.png" alt=""></i>
                                 </div>
-                                <h5 class="features-title"><a href="https://www.midrc.org/midrc-publications">Department metrics and publications</a></h5>
-                               <!-- <h5 class="features-title">Department Metrics</h5>
-                                <a href="https://www.midrc.org/midrc-publications">View the publications from MIDRC team</a> -->
-                                <!--<p>View the publications from MIDRC</p> -->
+                                <h5 class="features-title">MIDRC by numbers</h5>
+                               <p>We are always working hard to increase the number of examples that researchers may access.</p>
                             </div>
                         </div>
                         <!-- ***** Features Small Item End ***** -->
@@ -108,10 +109,10 @@ https://templatemo.com/tm-535-softy-pinko
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.4s">
                             <div class="features-small-item">
                                 <div class="icon">
-                                    <i> <img src="{% static 'images/featured-item-01.png' %}" alt=""></i>
+                                    <i><img src="images/featured-item-01.png" alt=""></i>
                                 </div>
-                                <h5 class="features-title">Contact us if you have a question in mind</h5>
-                                <!--<p>Contact us immediately if you have a question in mind</p> -->
+                                <h5 class="features-title">Best Relationship</h5>
+                                <p>Contact us immediately if you have a question in mind</p>
                             </div>
                         </div>
                         <!-- ***** Features Small Item End ***** -->
@@ -120,10 +121,10 @@ https://templatemo.com/tm-535-softy-pinko
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.6s">
                             <div class="features-small-item">
                                 <div class="icon">
-                                    <i> <img src="{% static 'images/featured-item-01.png' %}" alt=""></i>
+                                    <i><img src="images/featured-item-01.png" alt=""></i>
                                 </div>
-                                <h5 class="features-title">Research Focus: MIDRC is a multi-institutional collaborative initiative aimed at accelerating
-                                    the transfer of knowledge and innovation </h5>
+                                <h5 class="features-title">Research Focus</h5>
+                                <p>MIDRC investigators are also developing algorithms, annotations, decision tools</p>
                             </div>
                         </div>
                         <!-- ***** Features Small Item End ***** -->
@@ -139,20 +140,21 @@ https://templatemo.com/tm-535-softy-pinko
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-md-12 col-sm-12 align-self-center" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
-                    <img src="{% static 'images/MAIIC_dashboard.png' %}" class="rounded img-fluid d-block mx-auto" alt="App">
+                    <img src="{% static 'images/MAI_care.png' %}" class="rounded img-fluid d-block mx-auto" alt="App">
                 </div>
                 <div class="col-lg-1"></div>
                 <div class="col-lg-6 col-md-12 col-sm-12 align-self-center mobile-top-fix">
                     <div class="left-heading">
-                       <a href="{% url 'login_base' %}" class="main-button-slider">MAIIC</a>
+                       <a href="{% url 'login_base' %}" class="main-button-slider"> MAI-CARE</a>
                     </div>
                     <div class="left-text">
-                        <p> This interface is designed as part of MIDRC consortium to help clinicians, researchers, and early AI developers with a modular,
+                        <p> This interface is designed as part of MIDRC's ML research to help clinicians, researchers, and early AI developers with a modular,
                             flexible, and user-friendly software tool that can effectively meet their needs to explore, train, and test AI algorithms
-                            as well as interpret their model results. The major highlight of MAIIC is its capability of visualization and interpretability
-                            of otherwise Blackbox AI algorithms. The significance of this API is unexperienced users may have more time to swiftly pre-process,
-                            build/train their AI models on their own use-cases, and further visualize and explore these AI models as part of this pipeline, all in an end-to-end manner.</p>
+                            as well as interpret their model results.The major highlight of MAI-CARE is its capability of visualization and interpretability
+                            which can help physicians, pathologists, radiologists interpret/visualize results of otherwise Blackbox AI algorithms. The significance of this API is
+                            unexperienced users may have more time to swiftly pre-process, build/train their AI models on their own use-cases, and further visualize and explore these AI models as part of this pipeline, all in an end-to-end manner.</p>
                     </div>
+
                 </div>
             </div>
             <div class="row">
@@ -165,7 +167,7 @@ https://templatemo.com/tm-535-softy-pinko
     <!-- ***** Features Big Item End ***** -->
 
     <!-- ***** Features Big Item Start ***** -->
-    <!--<section class="section padding-bottom-100">
+   <!-- <section class="section padding-bottom-100">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12 align-self-center mobile-bottom-fix">
@@ -192,136 +194,60 @@ https://templatemo.com/tm-535-softy-pinko
                 <div class="row">
                     <div class="offset-lg-3 col-lg-6">
                         <div class="info">
-                            <h1>Work Process</h1>
-                            <p>Aenean nec tempor metus. Maecenas ligula dolor, commodo in imperdiet interdum, vehicula ut ex. Donec ante diam.</p>
+                            <h1>Welcome to the Medical Imaging and Data Resource Center (MIDRC)</h1>
+                            <p>MIDRC is a multi-institutional collaborative initiative driven by the medical imaging community
+                                that was initiated in late summer 2020 to help combat the global COVID-19 health emergency.
+                                MIDRC is aimed at accelerating the transfer of knowledge and innovation in the COVID-19 pandemic and beyond.
+                                MIDRC, funded by the National Institute of Biomedical Imaging and Bioengineering (NIBIB) and hosted at the University of Chicago,
+                                is co-led by the American College of Radiology® (ACR®), the Radiological Society of North America (RSNA),
+                                and the American Association of Physicists in Medicine (AAPM).</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- ***** Mini Box Start ***** -->
-                <div class="row">
+            <!--    <div class="row">
                     <div class="col-lg-2 col-md-3 col-sm-6 col-6">
                         <a href="#" class="mini-box">
-                            <i> <img src="{% static 'images/work-process-item-01.png' %}" alt=""></i>
+                            <img src="" class="rounded img-fluid d-block mx-auto" alt="App">
                             <strong>Get Ideas</strong>
                             <span>Godard pabst prism fam cliche.</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6 col-6">
                         <a href="#" class="mini-box">
-                            <i><img src="images/work-process-item-01.png" alt=""></i>
-                            <strong>Sketch Up</strong>
+                            <img src="" class="rounded img-fluid d-block mx-auto" alt="App">
+                            <strong>Presentations</strong>
+                            <span>Upcoming lectures of the speakers </span>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-6 col-6">
+                        <a href="#" class="mini-box">
+                            <img src="" class="rounded img-fluid d-block mx-auto" alt="App">
+                            <strong>Recorded presentations</strong>
                             <span>Godard pabst prism fam cliche.</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6 col-6">
                         <a href="#" class="mini-box">
-                            <i><img src="images/work-process-item-01.png" alt=""></i>
-                            <strong>Discuss</strong>
-                            <span>Godard pabst prism fam cliche.</span>
+                            <img src="" class="rounded img-fluid d-block mx-auto" alt="App">
+                            <strong>News and Events</strong>
+                            <span>Interested in joining the MLL distribution list</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6 col-6">
                         <a href="#" class="mini-box">
-                            <i><img src="images/work-process-item-01.png" alt=""></i>
-                            <strong>Revise</strong>
-                            <span>Godard pabst prism fam cliche.</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-6 col-6">
-                        <a href="#" class="mini-box">
-                            <i><img src="images/work-process-item-01.png" alt=""></i>
+                            <img src="" class="rounded img-fluid d-block mx-auto" alt="App">
                             <strong>Approve</strong>
-                            <strong>Approve</strong>
-                            <span>Godard pabst prism fam cliche.</span>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-6 col-6">
-                        <a href="#" class="mini-box">
-                            <i><img src="images/work-process-item-01.png" alt=""></i>
-                            <strong>Launch</strong>
                             <span>Godard pabst prism fam cliche.</span>
                         </a>
                     </div>
                 </div>
-                <!-- ***** Mini Box End ***** -->
+                 ***** Mini Box End ***** -->
             </div>
         </div>
     </section>
     <!-- ***** Home Parallax End ***** -->
-
-    <!-- ***** Testimonials Start ***** -->
-    <section class="section" id="testimonials">
-        <div class="container">
-            <!-- ***** Section Title Start ***** -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="center-heading">
-                        <h2 class="section-title">What do they say?</h2>
-                    </div>
-                </div>
-                <!--<div class="offset-lg-3 col-lg-6">
-                    <div class="center-text">
-                        <p>Donec tempus, sem non rutrum imperdiet, lectus orci fringilla nulla, at accumsan elit eros a turpis. Ut sagittis lectus libero.</p>
-                    </div>
-                </div> -->
-            </div>
-            <!-- ***** Section Title End ***** -->
-
-            <div class="row">
-                <!-- ***** Testimonials Item Start ***** -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="team-item">
-                        <div class="team-content">
-                            <i> <img src="{% static 'images/MaryellenL_Giger.png' %}" alt=""></i>
-                            <p>Maryellen L. Giger, PhD, is the principal investigator of the NIBIB MIDRC contract and A.N. Pritzker Professor of Radiology,
-                                Committee on Medical Physics, and the College at the University of Chicago</p>
-                            <div class="team-info">
-                                <h3 class="user-name">Maryellen Giger</h3>
-                                <span>Principal Investigator</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ***** Testimonials Item End ***** -->
-
-                <!-- ***** Testimonials Item Start ***** -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="team-item">
-                        <div class="team-content">
-                            <i> <img src="{% static 'images/Issam-El-Naqa_square-300x300.jpg' %}" alt=""></i>
-                            <p>Issam El Naqa is a Chair and Senior member at Moffitt machine learning. His lab's research interests are in the areas of oncology bioinformatics,
-                                artificial intelligence, multimodality image analysis, and treatment outcome modeling</p>
-                            <div class="team-info">
-                                <h3 class="user-name">Issam El Naqa</h3>
-                                <span>Co-PI</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ***** Testimonials Item End ***** -->
-
-                <!-- ***** Testimonials Item Start ***** -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="team-item">
-                        <div class="team-content">
-                            <i><img src="images/testimonial-icon.png" alt=""></i>
-                            <p>Quisque diam odio, maximus ac consectetur eu, auctor non lorem. Cras quis est non ante ultrices molestie. Ut vehicula et diam at aliquam.</p>
-                            <div class="user-image">
-                                <img src="http://placehold.it/60x60" alt="">
-                            </div>
-                            <div class="team-info">
-                                <h3 class="user-name">David Martin</h3>
-                                <span>Website Manager</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ***** Testimonials Item End ***** -->
-            </div>
-        </div>
-    </section>
-    <!-- ***** Testimonials End ***** -->
 
     <!-- ***** Pricing Plans Start ***** -->
    <!-- <section class="section colored" id="pricing-plans">
@@ -370,7 +296,6 @@ https://templatemo.com/tm-535-softy-pinko
                 </div>
 
 
-
                 <div class="col-lg-4 col-md-6 col-sm-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.4s">
                     <div class="pricing-item active">
                         <div class="pricing-header">
@@ -396,7 +321,6 @@ https://templatemo.com/tm-535-softy-pinko
                         </div>
                     </div>
                 </div>
-
 
                 <div class="col-lg-4 col-md-6 col-sm-12" data-scroll-reveal="enter bottom move 50px over 0.6s after 0.6s">
                     <div class="pricing-item">
@@ -427,9 +351,7 @@ https://templatemo.com/tm-535-softy-pinko
             </div>
         </div>
     </section>
-   -->
 
-    <!-- ***** Counter Parallax Start ***** -->
     <section class="counter">
         <div class="content">
             <div class="container">
@@ -462,79 +384,8 @@ https://templatemo.com/tm-535-softy-pinko
             </div>
         </div>
     </section>
-    <!-- ***** Counter Parallax End ***** -->
+    -->
 
-    <!-- ***** Blog Start ***** -->
-    <section class="section" id="blog">
-        <div class="container">
-            <!-- ***** Section Title Start ***** -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="center-heading">
-                        <h2 class="section-title">Blog Entries</h2>
-                    </div>
-                </div>
-                <div class="offset-lg-3 col-lg-6">
-                    <div class="center-text">
-                        <p>Integer molestie aliquam gravida. Nullam nec arcu finibus, imperdiet nulla vitae, placerat nibh. Cras maximus venenatis molestie.</p>
-                    </div>
-                </div>
-            </div>
-            <!-- ***** Section Title End ***** -->
-
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="blog-post-thumb">
-                        <div class="img">
-                            <img src="images/blog-item-01.png" alt="">
-                        </div>
-                        <div class="blog-content">
-                            <h3>
-                                <a href="#">Vivamus ac vehicula dui</a>
-                            </h3>
-                            <div class="text">
-                               Cras aliquet ligula dui, vitae fermentum velit tincidunt id. Praesent eu finibus nunc. Nulla in sagittis eros. Aliquam egestas augue.
-                            </div>
-                            <a href="#" class="main-button">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="blog-post-thumb">
-                        <div class="img">
-                            <img src="images/blog-item-02.png" alt="">
-                        </div>
-                        <div class="blog-content">
-                            <h3>
-                                <a href="#">Phasellus convallis augue</a>
-                            </h3>
-                            <div class="text">
-                                Aliquam commodo ornare nisl, et scelerisque nisl dignissim ac. Vestibulum finibus urna ut velit venenatis, vel ultrices sapien mattis.
-                            </div>
-                            <a href="#" class="main-button">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="blog-post-thumb">
-                        <div class="img">
-                            <img src="images/blog-item-03.png" alt="">
-                        </div>
-                        <div class="blog-content">
-                            <h3>
-                                <a href="#">Nam gravida purus non</a>
-                            </h3>
-                            <div class="text">
-                                Maecenas eu erat vitae dui convallis consequat vel gravida nulla. Vestibulum finibus euismod odio, ut tempus enim varius eu.
-                            </div>
-                            <a href="#" class="main-button">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- ***** Blog End ***** -->
 
     <!-- ***** Contact Us Start ***** -->
     <section class="section colored" id="contact-us">
@@ -548,7 +399,7 @@ https://templatemo.com/tm-535-softy-pinko
                 </div>
                 <div class="offset-lg-3 col-lg-6">
                     <div class="center-text">
-                        <p>Maecenas pellentesque ante faucibus lectus vulputate sollicitudin. Cras feugiat hendrerit semper.</p>
+                        <!--<p>Maecenas pellentesque ante faucibus lectus vulputate sollicitudin. Cras feugiat hendrerit semper.</p> -->
                     </div>
                 </div>
             </div>
@@ -556,13 +407,14 @@ https://templatemo.com/tm-535-softy-pinko
 
             <div class="row">
                 <!-- ***** Contact Text Start ***** -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
+              <!--  <div class="col-lg-4 col-md-6 col-sm-12">
                     <h5 class="margin-bottom-30">Keep in touch</h5>
                     <div class="contact-text">
                         <p>110-220 Quisque diam odio, maximus ac consectetur eu, 10260
                         <br>auctor non lorem</p>
+                        <p>You are NOT allowed to re-distribute Softy Pinko template on any template collection websites. Thank you.</p>
                     </div>
-                </div>
+                </div> -->
                 <!-- ***** Contact Text End ***** -->
 
                 <!-- ***** Contact Form Start ***** -->
@@ -614,10 +466,10 @@ https://templatemo.com/tm-535-softy-pinko
                     </ul>
                 </div>
             </div>
-            <!--<div class="row">
+            <div class="row">
                 <div class="col-lg-12">
-                    <p class="copyright">Copyright &copy; 2020 Softy Pinko Company - Design: TemplateMo</p>
-                </div>-->
+                    <!--<p class="copyright">Copyright &copy; 2020 Softy Pinko Company - Design: TemplateMo</p> -->
+                </div>
             </div>
         </div>
     </footer>

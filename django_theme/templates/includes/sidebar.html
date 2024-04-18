@@ -1,109 +1,132 @@
 <div class="sidebar">
-   <div class="sidebar-wrapper">
-      <div class="logo">
-         <a target="_blank"
-            href=" https://www.midrc.org/" class="simple-text logo-normal">
-         MAIIC Dashboard
-         </a>
-      </div>
-      <nav class="nav">
-         {% if request.user.is_authenticated %}
-         <!--<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDatabase" aria-expanded="false" aria-controls="collapseDatabase">
-            <p> <i class="fas fa-database" ></i> Launch data Portal  </p>
-            </a>
-            <div class="collapse" id="collapseDatabase" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
-            <nav class="sb-sidenav-menu-nested nav">
-              <strong><a class="nav-link" href="ui-database.html">Get data from Gen3</a></strong>
-            </nav>
-            </div> -->
+  <div class="sidebar-wrapper">
+     <div class="logo">
+        <a target="_blank"
+           href=" https://www.midrc.org/" class="simple-text logo-normal">
+        MAI-CARE
+        </a>
+     </div>
+     <nav class="nav">
+        {% if request.user.is_authenticated %}
+        <!--<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDatabase" aria-expanded="false" aria-controls="collapseDatabase">
+           <p> <i class="fas fa-database" ></i> Launch data Portal  </p>
+           </a>
+           <div class="collapse" id="collapseDatabase" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+           <nav class="sb-sidenav-menu-nested nav">
+             <strong><a class="nav-link" href="ui-database.html">Get data from Gen3</a></strong>
+           </nav>
+           </div> -->
 
-  <!-- / Introduction Block -->
+ <!-- / Introduction Block -->
 
-  <!-- /////////// Begin Dropdown //////////// -->
-              <div class='swanky'>
-  <div class='swanky_wrapper'>
-    <input id='Dashboard' name='radio' type='radio'>
-    <label for='Dashboard'>
-      <i class="fas fa-database" ></i><span><a href ="https://data.midrc.org/explorer">Launch Gen3</a></span>
-    </label>
-    <input id='Sales' name='radio' type='radio'>
-    <label for='Sales'>
-      <i class="fas fa-eye"></i>
-      <span>DNN stages</span>
-      <div class='lil_arrow'></div>
-      <div class='bar'></div>
-      <div class='swanky_wrapper__content'>
-        <ul>
-            <li><a href ="training.html">Training</a></li>
-            <li><a href ="testing.html">Testing</a></li>
-        </ul>
-
-      </div>
-    </label>
-    <input id='Messages' name='radio' type='radio'>
-    <label for='Messages'>
-      <i class="fas fa-chart-area"></i>
-      <span>Visualization</span>
-      <div class='lil_arrow'></div>
-      <div class='bar'></div>
-      <div class='swanky_wrapper__content'>
-        <ul>
-          <li><a href ="heat_maps.html">Heat Maps</a></li>
-            <li><a href ="activation_maps.html">Activation Maps</a></li>
-        </ul>
-      </div>
-    </label>
-    <input id='Users' name='radio' type='radio'>
-    <label for='Users'>
-      <i class="fas fa-book-open"></i>
-      <span>Explainability</span>
-      <div class='lil_arrow'></div>
-      <div class='bar'></div>
-      <div class='swanky_wrapper__content'>
-        <ul>
-         <li><a href ="shapley_value.html">Shapley</a></li>
-         <li><a href ="interactive_dropdowns.html">LIME</a></li>
-        </ul>
-      </div>
-    </label>
-    <input id='Settings' radio='radio' type='radio'>
-    <label for='Settings'>
-      <i class="fas fa-table"></i>
-      <span>Documentation</span>
-      <div class='lil_arrow'></div>
-      <div class='swanky_wrapper__content'>
-        <ul>
-          <li>Databases</li>
-          <li>Design</li>
-          <li>Change User</li>
-          <li>Log Out</li>
-        </ul>
-      </div>
-    </label>
-   <!--<input id='Custom' radio='radio' type='radio'>
-    <label for='Custom'>
-      <i class="fas fa-table"></i>
-      <span>Launch the IDE</span>
-      <div class='lil_arrow'></div>
-      <div class='swanky_wrapper__content'>
-        <ul>
-          <li><a href ="jupyter_notebook.html">Jupyter</a></li>
-        </ul>
-      </div>
-    </label> -->
-  </div>
-         </li>
-         {% else %}
-         <li class="active">
-            <a target="_blank"
-               href="https://www.creative-tim.com/product/black-dashboard-pro-django">
-               <i class="tim-icons icon-spaceship"></i>
-               <p>PRO Version</p>
-            </a>
-         </li>
-         {% endif %}
+ <!-- /////////// Begin Dropdown //////////// -->
+ <!-- ddsize (dropdown size): 100px = one radio button worth of expansion-->
+             <div class='swanky'>
+ <div class='swanky_wrapper'>
+   <input id='Dashboard' name='radio' type='radio'>
+   <label for='Dashboard' style='--ddsize: 200px'>
+     <i class="fas fa-database" ></i>
+       <span>Load Database</span>
+     <div class='lil_arrow'></div>
+     <div class='bar'></div>
+     <div class='swanky_wrapper__content'>
+       <ul>
+           <li><a href ="{% url 'augmentations'%}">Augmentations</a></li>
+           <li style='z-index: 0'><a href ="{% url 'monitor'%}" style='z-index: 3333'>Manage Jobs</a></li>
+           
          </ul>
-      </nav>
-   </div>
+
+     </div>
+   </label>
+   <input id='Sales' name='radio' type='radio'>
+   <label for='Sales' style='--ddsize: 200px'>
+     <i class="fas fa-eye"></i>
+     <span>DNN stages</span>
+     <div class='lil_arrow'></div>
+     <div class='bar'></div>
+     <div class='swanky_wrapper__content'>
+       <ul>
+           <li style='z-index: 1'>
+             <div class="dropdown">
+               <a class="dropdown" style='background-color: transparent;'>Training></a>
+               <div class="dropdown-menu" style='padding: 0px; margin: -10px 0px'>
+
+                 <a href ="{% url 'training'%}" >Pretrained</a>
+                 <a href ="{% url 'training'%}" >Scratch</a>
+               </div>
+             </div>
+           
+           </li>
+           <li><a href ="{% url 'testing'%}">Testing</a></li>
+       </ul>
+
+     </div>
+   </label>
+   <input id='Messages' name='radio' type='radio'>
+   <label for='Messages' style='--ddsize: 200px'>
+     <i class="fas fa-chart-area"></i>
+     <span>Visualization</span>
+     <div class='lil_arrow'></div>
+     <div class='bar'></div>
+     <div class='swanky_wrapper__content'>
+       <ul>
+         <li><a href ="{% url 'heat_maps'%}">Heat Maps</a></li>
+           <li><a href ="{% url 'activation_maps'%}">Activation Maps</a></li>
+       </ul>
+     </div>
+   </label>
+   <input id='Users' name='radio' type='radio'>
+   <label for='Users' style='--ddsize: 200px'>
+     <i class="fas fa-book-open"></i>
+     <span>Explainability</span>
+     <div class='lil_arrow'></div>
+     <div class='bar'></div>
+     <div class='swanky_wrapper__content'>
+       <ul>
+        <li><a href ="shapely.html">SHAPELY</a></li>
+        
+        <li><a href ="lime.html">LIME</a></li>
+       </ul>
+     </div>
+   </label>
+   <input id='Settings' radio='radio' type='radio'>
+   <label for='Settings' style='--ddsize: 200px'>
+     <i class="fas fa-table"></i>
+     <span>Documentation</span>
+     <div class='lil_arrow'></div>
+     <div class='swanky_wrapper__content'>
+       <ul>
+         <li>Databases</li>
+         <li>Design</li>
+         <li>Change User</li>
+         <li>Log Out</li>
+       </ul>
+     </div>
+   </label>
+  <!--<input id='Custom' radio='radio' type='radio'>
+   <label for='Custom'>
+     <i class="fas fa-table"></i>
+     <span>Launch the IDE</span>
+     <div class='lil_arrow'></div>
+     <div class='swanky_wrapper__content'>
+       <ul>
+         <li><a href ="jupyter_notebook.html">Jupyter</a></li>
+       </ul>
+     </div>
+   </label> -->
+ </div>
+        </li>
+        {% else %}
+        <li class="active">
+           <a target="_blank"
+              href="https://www.creative-tim.com/product/black-dashboard-pro-django">
+              <i class="tim-icons icon-spaceship"></i>
+              <p>PRO Version</p>
+           </a>
+        </li>
+        {% endif %}
+        </ul>
+     </nav>
+  </div>
 </div>
 

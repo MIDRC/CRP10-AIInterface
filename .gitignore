@@ -5,3 +5,5 @@ Django_VirtualEnv/*
 !.elasticbeanstalk/*.global.yml
 Django_VirtualEnv/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd 
 /testFiles
+/django_theme/media/ogImg
+/django_theme/media

@@ -1,5 +1,3 @@
-<!-- This is the main template re-directed after choosing API option from the main website -->
-
 <!doctype html>
 <html lang="en">
    {% load static %}
@@ -7,14 +5,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-      <link rel="icon" href="{% static 'images/MIDRC-Logo-Vertical-Version.jpg' %}">
+      <link rel="icon" href="http://media.glassdoor.com/sqll/40232/moffitt-cancer-center-squarelogo-1565108527247.png">
       <link href="{% static 'css/sb-admin.css' %}" rel="stylesheet">
-      <title>{% block title %}MAIIC{% endblock %}</title>
+      <title>{% block title %}MAI-CARE{% endblock %}</title>
    </head>
-   <body>
+   <body style="background: linear-gradient(135deg, #8254EA 0%, #E86DEC 100%)">
       <nav class="navbar navbar-expand-lg navbar-light bg-dark mb-4">
          <div class="container">
-            <strong><a class="navbar-brand" href="{% url 'users' %}">MAIIC</a> </strong>
+            <strong><a class="navbar-brand" href="{% url 'users' %}">MAI-CARE</a> </strong>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -47,6 +45,7 @@
                {% else %}
                <form class="form-inline my-2 my-lg-0" method="GET">
                   <a href="{% url 'login' %}" class="btn btn-primary ml-2">Log in</a>
+                   <!--http://oagraphql:3006 -->
                   <a href="{% url 'signup' %}" class="btn btn-primary ml-2">Sign up</a>
                </form>
                {% endif %}
@@ -55,8 +54,8 @@
       </nav>
       <div class="container">
          {% block content %}
-         <h2>Welcome to MIDRC AI Interface for Covid!!
-             Please choose Home to access the dashboard for training, testing, interpreting the AI models</h2>
+         <h2>Welcome to MIDRC CRP10 AI Interface for Covid and Cancer Research</h2>
+             <h3>Please choose "Home" to access the dashboard for training, testing, interpreting the AI models</h3>
          {% endblock %}
       </div>
       <!-- <img style="width: 1000px; height: 500px;" src="{% static 'images/machine-learning-banner.jpg' %}" class="img-rounded" alt="Image description"> -->

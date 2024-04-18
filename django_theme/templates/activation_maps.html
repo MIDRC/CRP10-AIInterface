@@ -8,7 +8,32 @@
 <!--<!DOCTYPE html>
 <html lang="en"> -->
    {% load static %}
-
+   <style>
+	* {box-sizing: border-box;}
+	
+	.img-zoom-container {
+	  position: relative;
+	  display: -webkit-inline-box;
+	}
+	
+	.img-zoom-lens {
+	  position: absolute;
+	  border: 1px solid #d4d4d4;
+	  /*set the size of the lens:*/
+	  width: 40px;
+	  height: 40px;
+	}
+	
+	.img-zoom-result {
+	  /* border: 1px solid #d4d4d4; */
+	  /*set the size of the result div:*/
+	  width: 300px;
+	  height: 300px;
+	  margin-left: 30px;
+	}
+	</style>
+	<!-- in script for zooming, allow the user to set the amount of zoom.
+	will be carried over thru a button (set zoom level and confirm, or add the +- buttons to streamline it) -->
 <head>
 	<title>Multiselect 09</title>
 	<meta charset="utf-8">
@@ -17,87 +42,53 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
 	<link href="{% static 'css/style.css' %}" rel="stylesheet"> </head>
-
+	<script src="{% static 'js/imageZoom.js' %}"></script>
 <body>
 	<form method="POST" enctype="multipart/form-data" action=" "> {% csrf_token %}
 		<section class="ftco-section">
 			<div class="container">
-				<div class="row justify-content-center", id = "1">
+				<div class="row justify-content-center">
 					<div class="col-md-6 text-center mb-5">
 						<h2 class="heading-section">Choose the DL Layer to investigate</h2> </div>
 				</div>
-
-                <div class="row justify-content-center", id = "3">
+				<div class="row justify-content-center">
 					<div class="col-lg-5 d-flex justify-content-center align-items-center">
-                        <select class="js-select2" multiple="multiple" onchange="dnLayers()" name = "models" id="models" action="/">
-                            <option disabled selected value> select an option</option>
-                            <option value="ChestCR_model">ChestCR_model</option>
-                            <option value="covid_kaggle_model">covid_kaggle_model</option>
-                        </select>
+						<select class="js-select2" multiple="multiple" name="layers" action="/"> {% for layer in DNN_layers %}
+							<option value="{{layer}}">{{layer}}</option> {% endfor %} </select>
 					</div>
 				</div>
-
-                <div class="row justify-content-center", id = "2">
-					<div class="col-lg-5 d-flex justify-content-center align-items-center">
-						<select class="js-select2" multiple="multiple" name ="layers" id="layers" action="/">
-                        </select>
-					</div>
-				</div>
-
 			</div>
 			<div class="col-md-4 col sm-4">
 				<label form="formFileabled" class="form-label">Upload your project files here:</label>
-				<input name="filePath" class="form-control" type="file" id="formFileabled" abled /> </div>
+				<input name="filePath" class="form-control" type="file" id="formFileabled" abled />
 			<input type="submit" value="Submit">
-			<div class="col-md-4 col sm-4">
-				<h2>Activation Map:</h2> <img src={{ActivationMapImgPath}} class="img-fluid" alt='' style="width: 400px;"> {{activationMapImgPath}} </div>
-		</section>
-
-
-        <script>
-            function createOptions(inputLayers) {
-                for(let i = 0; i < inputLayers.length; i++){
-                    var option_value = inputLayers[i];
-                    var el = document.createElement("option");
-                    el.textContent = option_value;
-                    el.value = option_value;
-                    document.getElementById('layers').appendChild(el);
-                }
-            }
-            function removeOptions() {
-              // This if condition removes the existing options from the layers dropdown
-                if(document.getElementById('layers').length){
-                    let select = document.getElementById('layers');
-                    let select_length = select.options.length;
-                    for(let i = select_length - 1; i >= 0; i--){
-                        select.remove(i);
-                    }
-                }
-            }
-            function dnLayers() {
-                let mdls = document.getElementById("models");
-                let modelName = mdls.options[mdls.selectedIndex].value;
-                let layers = JSON.parse("{{ DNN_layers|escapejs }}");
-                if(modelName === "ChestCR_model"){
-                    let ChestCR_layers = layers['ChestCR_model'];
-                    removeOptions();
-					// This loop will create and add the options to layers dropdown
-                    createOptions(ChestCR_layers);
-                } else if(modelName === "covid_kaggle_model"){
-                    let covid_kaggle_layers = layers['covid_kaggle_model'];
-                    removeOptions();
-					// This loop will create and add the options to layers dropdown
-					createOptions(covid_kaggle_layers);
-                }
-            }
-
-        </script>
+		</div>
+			<!--<div>DNN layer chosen is:{{layer_name}}</div>-->
+			<!--<h2>Input image:</h2>
+                <img src={{filePathName}} class="img-fluid" alt='imagename' style="width: 400px;"> -->
+			
+			
+			
+			<!-- make dropdown inline with everything with its own seperate button that alters the color scheme-->
+				<div class="col-md-4 col sm-4">
+				<!-- <h2>Activation Map:</h2> <img src={{ActivationMapImgPath}} class="img-fluid" alt='' style="width: 400px;"> {{activationMapImgPath}} </div> -->
+				<div class="img-zoom-container">
+					<img id="myimage" src={{ActivationMapImgPath}} class="img-fluid" alt='' style="width: 400px;">
+					<div id="myresult" class="img-zoom-result" style = "width: 400px;"></div>
+				  </div>
+				<h2>{{layer_name}}</h2>
+				<h2>{{key}}</h2>
+			</div>
+			</section>
+		
+		<script>view</script>
 		<script src="{% static 'js/jquery.min_HM.js' %}"></script>
 		<script src="{% static 'js/popper_HM.js' %}"></script>
 		<script src="{% static 'js/bootstrap.min.js' %}"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 		<script src="{% static 'js/main_HM.js' %}"></script>
 	</form>
+	<script>imageZoom("myimage", "myresult");</script>
 </body>
 
 {% endblock content %}

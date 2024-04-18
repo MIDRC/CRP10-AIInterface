@@ -1,4 +1,5 @@
-{% extends 'layouts/base.html' %}
+<!-- {% extends 'layouts/base.html' %} -->
+{% block title %} Transfer Learning {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -15,10 +16,16 @@
         <title>Title</title>
         <link rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script>
+            function update() {
+                window.location = window.location.href;
+            }
+            setInterval('update()', 10000);
+        </script>
     </head>
-    <body>
+    <body style>
         <div class="container d-flex justify-content-center">
-            <div class="jumbotron text-center col-md-7">
+            <div class="jumbotron text-center col-md-7" style="top: 20px;">
                 <table>
                     <tbody>
                     {% for job_name, state, progress, task_id in info %}
@@ -41,11 +48,11 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            <a href="{% url 'run' %}"><button class="btn-dark">Back</button></a>
+            <!-- <a href="{% url 'run' %}"><button class="btn-dark">Back</button></a> -->
             </div>
         </div>
     </body>
-</html>
+<!-- </html> -->
 
 {% endblock content %}
 

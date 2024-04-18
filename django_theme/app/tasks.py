@@ -1,19 +1,21 @@
-# tasks.py would contain the model training tasks which are used to track, monitor while performing training and
-# the resultant is utilized to display on the progress bars
-
 from django_theme.celery import app
 from app.models import Tasks
 from time import sleep
-import random
-import keras
+from celery import shared_task
 from app import views
+import numpy as np
+from tensorflow import keras
+import random
+from django.conf import settings
+import numpy as np
+import json
 
-normal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_negative"
-abnormal_scan_path = r"M:\dept\Dept_MachineLearning\Staff\ML Engineer\Naveena Gorre\Datasets\Covid_MIDRC\Covid_Classification\Covid_positive"
+normal_scan_path = settings.NORMAL_SCAN_PATH
+abnormal_scan_path = settings.ABNORMAL_SCAN_PATH
+
 
 @app.task(bind=True)
 def process(self, job_name=None):
-
     b = Tasks(task_id=self.request.id, job_name=job_name)
     b.save()
 
@@ -27,23 +29,66 @@ def process(self, job_name=None):
 
 
 @app.task(bind=True)
-
-def process_training(self,Epochs,LearningRate, Batchsize,job_name =None):
-
-    b = Tasks(task_id=self.request.id,job_name=job_name)
+def process_training(self, Epochs, LearningRate, Batchsize, Augment, Loss, Opt, job_name=None):
+    b = Tasks(task_id=self.request.id, job_name=job_name)
     b.save()
     print(LearningRate)
+    print(Loss)
+
+    # sanitizing dropdowns
+    if (Loss == 'BCE loss'):
+        Loss = 'binary_crossentropy'
+    elif (Loss == "CCE loss"):
+        Loss = 'categorical_crossentropy'
+    elif (Loss == "hinge loss"):
+        Loss = 'hinge'
+    elif (Loss == "MSLE loss"):
+        Loss = 'msle'
+    elif (Loss == "MAE loss"):
+        Loss = 'mae'
+
     self.update_state(state='Pre-processing', meta={'progress': '33'})
-    X_train, y_train, X_test, y_test, X_val, y_val = views.Home.pixelarray(normal_scan_path, abnormal_scan_path)
-    #sleep(random.randint(5, 10))
+    update()
+    X_train, y_train, X_test, y_test, X_val, y_val = views.Home.pixelarray(Augment, normal_scan_path,
+                                                                           abnormal_scan_path)
+    # X_train = np.repeat(X_train[..., np.newaxis], 3, -1)
+    # X_val = np.repeat(X_val[..., np.newaxis], 3, -1)
+
+    # #simply for testing, do put your own xtrain either in media/data or change local_settings to reflect it
+    # np.save(settings.DATA + 'xtrain.npy',X_train)
+    # np.save(settings.DATA + 'xtest.npy',X_test)
 
     self.update_state(state='compiling', meta={'progress': '66'})
+    update()
     CRcl_model = views.Home.model2()
-    CRcl_model.compile(loss="binary_crossentropy",optimizer=keras.optimizers.Adam(learning_rate=LearningRate),metrics=["acc"],)
-    #sleep(random.randint(5, 10))
 
-    self.update_state(state='fitting and training model', meta={'progress': '100'})
-    CRcl_model.fit(X_train, y_train, epochs=Epochs, batch_size=Batchsize, validation_data=(X_val, y_val),)
-    #sleep(random.randint(5, 10))
+    # allows any optimizer on the dropdown to be used
+    if (Opt == "Adam"):
+        CRcl_model.compile(loss=Loss, optimizer=keras.optimizers.Adam(learning_rate=LearningRate), metrics=["acc"], )
+    elif (Opt == "RMSProp"):
+        CRcl_model.compile(loss=Loss, optimizer=keras.optimizers.RMSprop(learning_rate=LearningRate), metrics=["acc"], )
+    elif (Opt == "SGD"):
+        CRcl_model.compile(loss=Loss, optimizer=keras.optimizers.SGD(learning_rate=LearningRate), metrics=["acc"], )
+    # MB-SGD  not in keras.optimizers or in any related packages
+    elif (Opt == "ADA grad"):
+        CRcl_model.compile(loss=Loss, optimizer=keras.optimizers.Adagrad(learning_rate=LearningRate), metrics=["acc"], )
+    elif (Opt == "ADA delta"):
+        CRcl_model.compile(loss=Loss, optimizer=keras.optimizers.Adadelta(learning_rate=LearningRate),
+                           metrics=["acc"], )
+    # NGA not in keras.optimizers, in evolutionary_keras.optimizers
+
+    # sleep(random.randint(5, 10))
+
+    self.update_state(state='fitting and training model', meta={'progress': '90'})
+    update()
+    CRcl_model.fit(X_train, y_train, epochs=Epochs, batch_size=Batchsize, validation_data=(X_val, y_val), )
+    update()  # might not be needed here or needed somewhere else
 
 
+def update():
+    # j = json.dumps(views.Home.track_jobs(), indent=4)
+
+    # with open("app/user_jobs.json", "w") as outfile:
+    #     outfile.write(j)
+    return (views.Home.jobs())
+    # do i even need update or should I just call views.home.jobs?
