@@ -47,8 +47,8 @@
                               <option value="">VGGNet</option>
                               <option>Transfer learning</option>
                               <option>Fine tuning</option>
-                               <option>Feature extraction</option>
-                              <option>Training from scratch</option>
+                              <!-- <option>Feature extraction</option>
+                              <option>Training from scratch</option> -->
                            </select>
                            <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="VGG" style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
@@ -62,7 +62,8 @@
                               <option>Yes</option>
                               <option>No</option>
                            </select>
-                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Data Augmentation" style="cursor:pointer;color:blue;">info</span>
+                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="data augmentation involves artificially expanding and
+                           diversifying a training dataset by applying various transformations to existing data" style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
                         </div>
                      </div>
@@ -104,7 +105,8 @@
 
                      <div class="input-group">
                         <div><input class="form-control" type="text" placeholder="Epochs"  name="epochVal" required></div>
-                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Epochs" style="cursor:pointer;color:blue;margin: auto;">info</span>
+                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="During an epoch, the neural network processes
+                        and learns from each data point in the training set once." style="cursor:pointer;color:blue;margin: auto;">info</span>
                      </div>
                      <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
@@ -118,7 +120,8 @@
                                <option value="ADA delta">ADA delta</option>
                                <option value="NGA">NGA</option>
                            </select>
-                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Optimizer" style="cursor:pointer;color:blue;">info</span>
+                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="An optimizer is an algorithm that adjusts a model's parameters
+                            to minimize the loss function and enhance performance." style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
                         </div>
                      </div>
@@ -133,18 +136,21 @@
                                <option>MAE loss</option>
                                <option>CLD loss</option>
                            </select>
-                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Loss" style="cursor:pointer;color:blue;">info</span>
+                           <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Measures the gap between predicted and actual values,
+                           offering feedback to steer the model's learning process." style="cursor:pointer;color:blue;">info</span>
                            <div class="select-dropdown"></div>
                            
                         </div>
                      </div>
                      <div class="input-group">
                         <div><input class="form-control" type="text" placeholder="Batchsize"  name="batchsizeVal" required></div>
-                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Batch Size" style="cursor:pointer;color:blue;margin:auto">info</span>
+                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="number of training samples processed by the model
+                        in one iteration" style="cursor:pointer;color:blue;margin:auto">info</span>
                      </div>
                      <div class="input-group">
                         <div><input class="form-control" type="text" placeholder="LearningRate" name="learnrateVal" required></div>
-                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Learning Rate" style="cursor:pointer;color:blue;margin:auto;">info</span>
+                        <span class="material-symbols-outlined" data-toggle="tooltip" data-placement="top" title="Controls the size of adjustments to a model's parameters during training,
+                        determining the step size at each iteration as it seeks to minimize the loss function" style="cursor:pointer;color:blue;margin:auto;">info</span>
                      </div>
                      <div class="p-t-10">
                          <a href="{% url 'monitor_training' %}">
