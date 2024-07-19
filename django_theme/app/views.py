@@ -126,10 +126,6 @@ class Home(TemplateView):
         context = {'a': 1}
         return render(request, 'index.html')
 
-    # def table(request):
-    #     return render(request, 'tables.html')
-    # testing comment
-
     def loadData(request):
         if request.method == 'POST':
             return render(request, 'ui-database.html')
@@ -161,34 +157,56 @@ class Home(TemplateView):
             Batchsize = int(request.POST.get('batchsizeVal'))
             LearningRate = float(request.POST.get('learnrateVal'))
             loss = request.POST.get('lossVal')
-            # print(Batchsize)
-            # print(Epochs)
-            # print(LearningRate)
-            optimizer = request.POST.get('optimizerVal')
-            model_input = request.POST.get('vggVal')
-            aug_value = request.POST.get('augVal')
-            if model_input == "Fine tuning":
+            print("augment val is:",Augment)
 
-                process_training.delay(Epochs, LearningRate, Batchsize, Augment, loss, optimizer, job_name=model_input)
-                # context = ChestCR_model.history['accuracy']
+            #if (request.POST.get('augVal') == 'No'): Augment = []
+            if (request.POST.get('augVal') == 'No'):
+                Augment = None
+                optimizer = request.POST.get('optimizerVal')
+                model_input = request.POST.get('vggVal')
+                aug_value = request.POST.get('augVal')
+                if model_input == "Fine tuning":
+                    process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer, job_name=model_input)
+                    return render(request, 'training.html', context={
+                        'message': f'To see the status of the training, click here or go to "Load Database -> Monitor Jobs"'})
 
-                # have it pop up monitor.html instead to have it show something relevant since right clicking submit and manually opening it in a new tab is cumbersome
-                # also possibly make it so it renders two things which might directly calls monitor_training instead of the following two lines
-                # can make it so the render only shows the immediate job (the one it created)
-                # info = Home.track_jobs()
-                # return render(request, 'monitor.html', context={'info': info}) # why does this the url be delete_job/gibberish? (makes two jobs for initializing and actually running? if so change monitor to only show one bar and combone the two in there)
-                # #also the above two lines still resubmit the training parameters, def fix
-                return render(request, 'training.html', context={
-                    'message': f'To see the status of the training, click here or go to "Load Database -> Monitor Jobs"'})
+                elif model_input == "Training from scratch":
+                    # process_training.delay(job_name=model_input) #commented out for now due to errors
+                    process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,
+                                           job_name=model_input)  # change later
 
+                    return render(request, 'training.html', context={
+                        'message': f'To see the status of the training, click here, click the gear, or go to "Load Database -> Monitor Jobs"'})
+            elif (request.POST.get('augVal') == 'Yes'):
+                    # default values for rotate and zoom
+                    rVal = 0
+                    zVal = 100
+                    if "Rotate" in Augment:
+                        temp = Augment.index("Rotate")
+                        rVal = (request.POST.get('rVal'))
+                        Augment[temp] = "Rotate-" + rVal
 
+                    if "Zoom" in Augment:
+                        temp = Augment.index("Zoom")
+                        zVal = str(request.POST.get('zVal'))
+                        Augment[temp] = "Zoom-" + zVal
 
-            elif model_input == "Training from scratch":
-                # process_training.delay(job_name=model_input) #commented out for now due to errors
-                process_training.delay(Epochs, LearningRate, Batchsize, Augment, loss, optimizer,
-                                       job_name=model_input)  # change later
-                return render(request, 'training.html', context={
-                    'message': f'To see the status of the training, click here, click the gear, or go to "Load Database -> Monitor Jobs"'})
+                    optimizer = request.POST.get('optimizerVal')
+                    model_input = request.POST.get('vggVal')
+                    aug_value = request.POST.get('augVal')
+                    if model_input == "Fine tuning":
+
+                        process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,
+                                               job_name=model_input)
+                        return render(request, 'training.html', context={
+                            'message': f'To see the status of the training, click here or go to "Load Database -> Monitor Jobs"'})
+
+                    elif model_input == "Training from scratch":
+                        # process_training.delay(job_name=model_input) #commented out for now due to errors
+                        process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,
+                                               job_name=model_input)  # change later
+                        return render(request, 'training.html', context={
+                            'message': f'To see the status of the training, click here, click the gear, or go to "Load Database -> Monitor Jobs"'})
         return render(request, "training.html")
 
     @require_GET
@@ -203,9 +221,25 @@ class Home(TemplateView):
         for item in entries:
             progress = 100  # max value for bootstrap progress
             # bar, when  the job is finished
-            result = AsyncResult(item.task_id)  # is here where the extra job is, to test have job name be printed
-            if isinstance(result.info, dict):
-                progress = result.info['progress']
+            result = AsyncResult(item.task_id)
+            # print(information)
+            # add something to check nonetype values and not use it to deal with the error
+            # Log result.info for debugging
+            print(f"Task ID: {item.task_id}, Result Info: {result.info}")
+            if result.info is not None and isinstance(result.info, dict):
+                if 'progress' in result.info:
+                    progress = result.info['progress']
+            # if isinstance(result.info, dict):
+            #
+            #     # check if something exists in the dictionary
+            #     if result.info is not None:
+            #         progress = result.info['progress']
+                # below does not show completed jobs, but does not have nonetype errors (will combine the two methods later)
+                # information.append([item.job_name, result.state,
+                #                  progress, item.task_id])
+
+            # was one level below before, would throw nonetype error but does show all completed jobs
+
             information.append([item.job_name, result.state,
                                 progress, item.task_id])
         return information
@@ -229,32 +263,10 @@ class Home(TemplateView):
     def delete_job(request, task_id=None):
         a = Tasks.objects.filter(task_id=task_id)
         a.delete()
-        print(request)
         info = Home.track_jobs()
-        tasks.update()
+      #  tasks.update()
         # print(request)
         return render(request, 'monitor.html', context={'info': info})
-
-    def jupyter_notebook(request):
-        if request.method == 'POST':
-            b = subprocess.check_output("jupyter-lab list".split()).decode('utf-8')
-            if "9999" not in b:
-                a = subprocess.Popen("jupyter-lab  --no-browser --port 9999".split())
-            start_time = time.time()
-            unreachable_time = 10
-            while "9999" not in b:
-                timer = time.time()
-                elapsed_time = timer - start_time
-                b = subprocess.check_output("jupyter-lab list".split()).decode('utf-8')
-                if "9999" in b:
-                    break
-                if elapsed_time > unreachable_time:
-                    return HttpResponse("Unreachable")
-            path = b.split('\n')[1].split('::', 1)[0]
-            print(path)
-            return render(request, path)
-        # You can here add data to your path if you want to open file or anything
-        return render(request, "jupyter_notebook.html")
 
     # augmentations done here, maybe make augs seperate functions if other processes need it
     def process_scan(Augment, filepath):
@@ -269,13 +281,84 @@ class Home(TemplateView):
         scan = cv2.resize(scan, (224, 224))  # size is set to 224 by 224, may want to not hard code it in the future
 
         # for easy showing of aug vs og, change so that "debug/condition will run this part only"
-        # if os.path.exists(settings.OGIMG): shutil.rmtree(settings.OGIMG, ignore_errors=True)
-        # os.mkdir(settings.OGIMG)
+        if os.path.exists(settings.OGIMG): shutil.rmtree(settings.OGIMG, ignore_errors=True)
+        os.mkdir(settings.OGIMG)
         temp = sitk.GetImageFromArray(scan)
         tempName = settings.OGIMG + settings.SEP + augName
+        # print(tempName)
         sitk.WriteImage(temp, tempName)
         file = pydicom.dcmread(tempName)
         dcm_jpg(file, tempName)
+        # print(Augment)
+        # rot = any('Rotate' in sub for sub in Augment)
+
+        for i in Augment:
+            # reason why the if statements are staggered are for scalability/stability
+            # bad inputs (if they somehow get to this point) will not crash the program
+            # staggers prevent accessing anything out of index and all that
+            # also redundant checks make sure the performed augment is the correct one,
+            # as any future augmentations with similar lengths/names will not be called improperly
+
+            # print(i)
+            # time.sleep(5) # temporary, just allows for easier testing
+            # print('space')
+
+            if (len(i) > 0):
+                if (i[0] == 'R' and len(i) > 6):
+                    if (i[0:7] == 'Rotate-'):
+                        temp = len(i) - 7  # if temp is zero, then it is random (imp later)
+                        if (temp > 0):
+                            # check if none/random was selected later too
+                            scan = rotate(scan, int(i[7:]))
+                            scan = cv2.resize(scan, (224, 224))  # must resize after rotation
+
+                elif (i[0] == 'Z' and len(i) > 5):
+                    if (i[0:5] == 'Zoom-'):
+                        temp = int(int(i[5:]) / 100)
+                        print(temp)
+                        np.kron(scan, np.ones((temp, temp)))  # zoom in by whatever factor
+
+                elif (i[0] == 'V' and len(i) == 5):
+                    if (i == 'VFlip'): scan = np.flip(scan, 1)
+
+                elif (i[0] == 'H' and len(i) == 5):
+                    if (i == 'HFlip'): scan = np.flip(scan, 0)
+
+                elif (i[0] == 'S' and len(i) == 5):
+                    if (i == 'Shear'):
+                        for x in range(scan.shape[1]):
+                            scan[:, x] = np.roll(scan[:, 1], x)
+                            scan = cv2.resize(scan, (224, 224))
+
+        # # old code, will remove once everything is stable
+
+        # if ('Rotate' in Augment):
+        #     scan = rotate(scan, 45*random.randint(1,2))
+        #     scan = cv2.resize(scan, (224,224)) #must resize after rotation
+
+        # if ('Zoom' in Augment):
+        #     np.kron(scan, np.ones((2,2))) #zoom in by factor of 2
+
+        # if ('VFlip' in Augment):
+        #     scan = np.flip(scan, 1)
+
+        # if ('HFlip' in Augment):
+        #     scan = np.flip(scan,0)
+
+        # if ('Shear' in Augment):
+        #     for i in range (scan.shape[1]):
+        #         scan[:,i] = np.roll(scan[:,1],i)
+        #         scan = cv2.resize(scan, (224,224))
+
+        # if ('activation' in Augment):
+        #     #aug = sitk.GetImageFromArray(scan)
+        #     # augName = settings.ACTIVATION_MAPS + '\\' + augName
+        #     # sitk.WriteImage(aug, augName)
+        #     #file = pydicom.dcmread(settings.ACTIVATION_MAPS + "\\test.dcm")
+        #     #dcm_jpg(file,  settings.ACTIVATION_MAPS + "\\test.dcm")
+        #     #scan = preprocess_input(scan)
+        #     aug = scan
+        #     #solo(aug)
 
         if ('Rotate' in Augment):
             # scan = rotate(scan, random.uniform (0.0, 360.0)) #for any degree of rotation, 360 can be substituted with whatever upper bound
@@ -307,6 +390,8 @@ class Home(TemplateView):
             # solo(aug)
         # below is for testing, saves aug for viewing
         # if you want to view as dicom file, comment out dcm_jpg (may add function to choose later)
+        if os.path.exists(settings.AUGIMG): shutil.rmtree(settings.AUGIMG, ignore_errors=True)
+        os.mkdir(settings.AUGIMG)
         aug = sitk.GetImageFromArray(scan)
         augName = settings.AUGIMG + settings.SEP + augName
         sitk.WriteImage(aug, augName)
@@ -653,7 +738,4 @@ class Home(TemplateView):
 
         # print(Home.track_jobs())
         data = Home.track_jobs()
-        # for x in data:
-        #     #x[1] = "e"
-        #     print(x)
         return render(request, 'jobs.html', {"data": data})
