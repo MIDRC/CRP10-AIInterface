@@ -152,61 +152,37 @@ class Home(TemplateView):
         print("request is:", request)
         if request.method == 'POST':
             Epochs = int(request.POST.get('epochVal'))
-            Augment = request.POST.getlist('augment')
-            print("augmentation value is:  ", Augment)
             Batchsize = int(request.POST.get('batchsizeVal'))
             LearningRate = float(request.POST.get('learnrateVal'))
             loss = request.POST.get('lossVal')
-            print("augment val is:",Augment)
 
-            #if (request.POST.get('augVal') == 'No'): Augment = []
             if (request.POST.get('augVal') == 'No'):
-                Augment = None
                 optimizer = request.POST.get('optimizerVal')
                 model_input = request.POST.get('vggVal')
-                aug_value = request.POST.get('augVal')
                 if model_input == "Fine tuning":
                     process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer, job_name=model_input)
                     return render(request, 'training.html', context={
                         'message': f'To see the status of the training, click here or go to "Load Database -> Monitor Jobs"'})
 
-                elif model_input == "Training from scratch":
+                elif model_input == "Transfer learning":
+                    process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,job_name=model_input)  # change later
+                    return render(request, 'training.html', context={
+                        'message': f'To see the status of the training, click here, click the gear, or go to "Load Database -> Monitor Jobs"'})
+
+            elif (request.POST.get('augVal') == 'Yes'):
+                optimizer = request.POST.get('optimizerVal')
+                model_input = request.POST.get('vggVal')
+                if model_input == "Fine tuning":
+                    process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,job_name=model_input)
+                    return render(request, 'training.html', context={
+                        'message': f'To see the status of the training, click here or go to "Load Database -> Monitor Jobs"'})
+
+                elif model_input == "Transfer learning":
                     # process_training.delay(job_name=model_input) #commented out for now due to errors
                     process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,
                                            job_name=model_input)  # change later
-
                     return render(request, 'training.html', context={
                         'message': f'To see the status of the training, click here, click the gear, or go to "Load Database -> Monitor Jobs"'})
-            elif (request.POST.get('augVal') == 'Yes'):
-                    # default values for rotate and zoom
-                    rVal = 0
-                    zVal = 100
-                    if "Rotate" in Augment:
-                        temp = Augment.index("Rotate")
-                        rVal = (request.POST.get('rVal'))
-                        Augment[temp] = "Rotate-" + rVal
-
-                    if "Zoom" in Augment:
-                        temp = Augment.index("Zoom")
-                        zVal = str(request.POST.get('zVal'))
-                        Augment[temp] = "Zoom-" + zVal
-
-                    optimizer = request.POST.get('optimizerVal')
-                    model_input = request.POST.get('vggVal')
-                    aug_value = request.POST.get('augVal')
-                    if model_input == "Fine tuning":
-
-                        process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,
-                                               job_name=model_input)
-                        return render(request, 'training.html', context={
-                            'message': f'To see the status of the training, click here or go to "Load Database -> Monitor Jobs"'})
-
-                    elif model_input == "Training from scratch":
-                        # process_training.delay(job_name=model_input) #commented out for now due to errors
-                        process_training.delay(Epochs, LearningRate, Batchsize, loss, optimizer,
-                                               job_name=model_input)  # change later
-                        return render(request, 'training.html', context={
-                            'message': f'To see the status of the training, click here, click the gear, or go to "Load Database -> Monitor Jobs"'})
         return render(request, "training.html")
 
     @require_GET
@@ -222,24 +198,9 @@ class Home(TemplateView):
             progress = 100  # max value for bootstrap progress
             # bar, when  the job is finished
             result = AsyncResult(item.task_id)
-            # print(information)
-            # add something to check nonetype values and not use it to deal with the error
-            # Log result.info for debugging
-            print(f"Task ID: {item.task_id}, Result Info: {result.info}")
             if result.info is not None and isinstance(result.info, dict):
                 if 'progress' in result.info:
                     progress = result.info['progress']
-            # if isinstance(result.info, dict):
-            #
-            #     # check if something exists in the dictionary
-            #     if result.info is not None:
-            #         progress = result.info['progress']
-                # below does not show completed jobs, but does not have nonetype errors (will combine the two methods later)
-                # information.append([item.job_name, result.state,
-                #                  progress, item.task_id])
-
-            # was one level below before, would throw nonetype error but does show all completed jobs
-
             information.append([item.job_name, result.state,
                                 progress, item.task_id])
         return information
@@ -264,8 +225,6 @@ class Home(TemplateView):
         a = Tasks.objects.filter(task_id=task_id)
         a.delete()
         info = Home.track_jobs()
-      #  tasks.update()
-        # print(request)
         return render(request, 'monitor.html', context={'info': info})
 
     # augmentations done here, maybe make augs seperate functions if other processes need it

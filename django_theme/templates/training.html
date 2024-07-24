@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% block title %} Transfer Learning {% endblock %}
+{% block title %} Training {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -66,7 +66,7 @@
 
                       <div class="input-group">
                         <div class="rs-select2 js-select-simple select--no-search">
-                           <select name="augVal" onchange="displayOptions('checkbox-test', this)" required>
+                           <select name="augVal" onchange="displayOptions('checkbox-test', this)">
                               <option value="">Data Augmentation</option>
                               <option>Yes</option>
                               <option>No</option>
@@ -83,7 +83,7 @@
 
                               <div class="col-4"><label for="Rotate">Rotate</label></div>
                               <div class="col-1"><input type="checkbox"  id="Rotate" name="augment" value="Rotate" style="vertical-align: bottom;" onchange=field("Rotate","rVal")></div>
-                              <div><input class="form-control" type="number" placeholder="angle of rotation"  name="rVal" id="rVal" style="display: none;" required></div>
+                              <div><input class="form-control" type="number" placeholder="angle of rotation"  name="rVal" id="rVal" style="display: none;"></div>
 
                            </div>
                            <div class="row">
@@ -166,7 +166,7 @@
                     <!--<button class="button">Monitor</button>
                        <button class="button" type="submit" name="train" value="Train">Train/Monitor</button>
                 </a>-->
-                
+
                    <!-- <p><i>{{ message }}</i></p> -->
                </div>
             </div>
