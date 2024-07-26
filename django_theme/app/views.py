@@ -198,23 +198,19 @@ class Home(TemplateView):
             progress = 100  # max value for bootstrap progress
             # bar, when  the job is finished
             result = AsyncResult(item.task_id)
-            if result.info is not None and isinstance(result.info, dict):
-                if 'progress' in result.info:
-                    progress = result.info['progress']
+            if isinstance(result.info, dict):
+                progress = result.info['progress']
             information.append([item.job_name, result.state,
                                 progress, item.task_id])
         return information
 
     @require_GET
     def monitor(request):
-
         info = Home.track_jobs()
-
         return render(request, 'monitor.html', context={'info': info})
 
     @require_GET
     def cancel_job(request, task_id=None):
-
         result = AsyncResult(task_id)
         result.revoke(terminate=True)
         info = Home.track_jobs()
