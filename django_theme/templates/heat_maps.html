@@ -64,26 +64,21 @@
 				<input name="filePath" class="form-control" type="file" id="formFileabled" abled />
 				<input type="submit" value="Submit">
 			</div>
-			<!--<div>DNN layer chosen is:{{layer_name}}</div>-->
-			<!--<h2>Input image:</h2>
-                <img src={{filePathName}} class="img-fluid" alt='imagename' style="width: 400px;"> -->
-			
-			
-			
+
 			<!-- make dropdown inline with everything with its own seperate button that alters the color scheme-->
 				<div class="col-md-4 col sm-4">
-				<!-- <h2>Activation Map:</h2> <img src={{ActivationMapImgPath}} class="img-fluid" alt='' style="width: 400px;"> {{activationMapImgPath}} </div> -->
 				<div class="img-zoom-container">
 					<img id="myimage" src={{HeatMapImgPath}} class="img-fluid" alt='' style="width: 400px;">
 					<div id="myresult" class="img-zoom-result" style = "width: 400px;"></div>
 				  </div>
 				<h2>{{layer_name}}</h2>
 				<h2>{{key}}</h2>
+				</div>
 			</section>
 		<script>view</script>
-		<script src="{% static 'js/jquery.min_HM.js' %}"></script>
-		<script src="{% static 'js/popper_HM.js' %}"></script>
-		<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!--		<script src="{% static 'js/jquery.min_HM.js' %}"></script>-->
+<!--		<script src="{% static 'js/popper_HM.js' %}"></script>-->
+<!--		<script src="{% static 'js/bootstrap.min.js' %}"></script>-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 		<script src="{% static 'js/main_HM.js' %}"></script>
 	</form>
