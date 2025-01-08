@@ -1,4 +1,4 @@
-**MIDRC CRP 10 - Visualization and Explainability of machine intelligence of COVID-19 for prognosis and monitoring therapy** (https://www.midrc.org/midrc-collaborating-research-projects/project-one-crp10)
+**MIDRC CRP 10 - Visualization and Explainability of machine intelligence for prognosis and monitoring therapy** (https://www.midrc.org/midrc-collaborating-research-projects/project-one-crp10)
 
 **Development Team**: Naveena Gorre (naveena.gorre@moffitt.org) 
 
